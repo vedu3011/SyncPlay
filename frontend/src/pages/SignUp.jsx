@@ -2,6 +2,10 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { registerUser } from "../lib/api";
+import { FaRegUser } from "react-icons/fa";
+import { RiLockPasswordLine } from "react-icons/ri";
+import { BsEye, BsEyeSlash } from "react-icons/bs";
+
 
 export default function SignUp() {
   const nav = useNavigate();
@@ -24,24 +28,62 @@ export default function SignUp() {
     }
   };
 
-  return (
-    <div className="min-h-screen bg-[#0d0f12] text-white px-6 py-10 flex flex-col">
-      <div className="mx-auto mt-6 mb-10 w-16 h-16 rounded-2xl bg-gradient-to-tr from-pink-500 to-orange-400 flex items-center justify-center text-2xl font-bold">S</div>
-      <h1 className="text-center text-2xl font-bold mb-8">Sign Up Now!</h1>
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
-      <form onSubmit={submit} className="space-y-4 max-w-md mx-auto w-full">
-        <input
+  return (
+    <div className="min-h-screen w-screen bg-[#010101] text-white px-6 py-10 flex flex-col items-center gap-[48px] overflow-hidden relative">
+      {/* Top curved background */}
+      <div className="flex justify-center items-center flex-1 flex-col half-oval-bottom mb-[10px] bg-[#0E1516] relative top-0">
+        
+        <img
+          src="../assets/syncplay_logo.png"
+          alt="logo"
+          className="w-[44px] h-[62px] object-contain flex justify-center relative z-10"
+        />
+      <h1 className="text-center text-[26px] font-extrabold ">Sign Up Now!</h1>
+      </div>
+
+      <form onSubmit={submit} className="w-[256px] flex flex-col gap-[18px] mb-[90px]">
+        <div>
+          <div className="w-full flex gap-[8px] items-baseline">
+          <FaRegUser />
+          <input
           name="username" placeholder="Enter Username" value={form.username} onChange={onChange}
-          className="w-full bg-transparent border border-gray-600 rounded-xl px-4 py-3 focus:outline-none focus:border-pink-500"
+          className="w-full bg-transparent px-4 py-3 focus:outline-none focus:border-pink-500"
+          />
+          </div>
+          <div className="w-full h-[1px] bg-[#ffffff]"></div>
+        </div>
+
+        <div>
+          <div className="w-full flex gap-[8px] items-baseline">
+            <RiLockPasswordLine />
+            <input
+          name="password" type={showPassword ? "text" : "password"} placeholder="Enter Password" value={form.password} onChange={onChange}
+          className="w-full bg-transparent px-4 py-3 focus:outline-none focus:border-pink-500"
+          />
+          <button type="button" onClick={() => setShowPassword(!showPassword)} className="border-none m-[0px] p-[0px] bg-[#010101]">
+            {showPassword ? <BsEyeSlash /> : <BsEye />}
+          </button>
+          </div>
+          <div className="w-full h-[1px] bg-[#ffffff]"></div>
+        </div>
+        
+        <div>
+          <div className="w-full flex gap-[8px] items-baseline">
+            <RiLockPasswordLine />
+            <input
+          name="confirm" type={showConfirm ? "text" : "password"} placeholder="Confirm Password" value={form.confirm} onChange={onChange}
+          className="w-full bg-transparent px-4 py-3 focus:outline-none focus:border-pink-500"
         />
-        <input
-          name="password" type="password" placeholder="Enter Password" value={form.password} onChange={onChange}
-          className="w-full bg-transparent border border-gray-600 rounded-xl px-4 py-3 focus:outline-none focus:border-pink-500"
-        />
-        <input
-          name="confirm" type="password" placeholder="Confirm Password" value={form.confirm} onChange={onChange}
-          className="w-full bg-transparent border border-gray-600 rounded-xl px-4 py-3 focus:outline-none focus:border-pink-500"
-        />
+          <button type="button" onClick={() => setShowConfirm(!showConfirm)} className="border-none m-[0px] p-[0px] bg-[#010101]">
+            {showConfirm ? <BsEyeSlash /> : <BsEye />}
+          </button>
+          </div>
+          <div className="w-full h-[1px] bg-[#ffffff]"></div>
+        </div>
+        
 
         {err && <div className="text-red-400 text-sm">{err}</div>}
 
@@ -52,9 +94,9 @@ export default function SignUp() {
           {loading ? "Creating..." : "Sign Up"}
         </button>
 
-        <p className="text-center text-sm text-gray-400">
+        <p className="text-center text-sm text-gray-400 mb-auto">
           Already have an account?{" "}
-          <Link to="/signin" className="text-pink-400">Sign In</Link>
+          <Link to="/signin" className="text-[#DD2476]">Sign In</Link>
         </p>
       </form>
     </div>
