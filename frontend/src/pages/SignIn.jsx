@@ -2,6 +2,8 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { loginUser } from "../lib/api";
+import {  getPreferences } from "../lib/api";
+
 
 export default function SignIn() {
   const nav = useNavigate();
@@ -11,18 +13,50 @@ export default function SignIn() {
 
   const onChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
-  const submit = async (e) => {
-    e.preventDefault();
-    setErr(""); setLoading(true);
-    try {
-      await loginUser(form);
-      nav("/"); // later: go to Home
-    } catch (e) {
-      setErr(e?.response?.data?.error || "Invalid credentials");
-    } finally {
-      setLoading(false);
+
+const submit = async (e) => {
+  e.preventDefault();
+  setErr(""); 
+  setLoading(true);
+  
+  try {
+    // console.log("🔍 Attempting login with:", form);
+    
+    const data = await loginUser(form);
+    
+    console.log("✅ Login success");
+    // console.log("🎫 Access token:", data.access);
+    // console.log("🔄 Refresh token:", data.refresh);
+    // console.log("👤 User data:", data.user);
+    // console.log("🔍 Type of data.user:", typeof data.user);
+    
+    // ✅ Add safety check
+    if (data.user && data.user.username) {
+      localStorage.setItem("username", data.user.username);
+      console.log("✅ Username saved:", data.user.username);
+    } else {
+      console.log("❌ No user data received");
     }
-  };
+    const preferences = await getPreferences();
+
+    const hasPreferences =
+      (preferences.preferred_artists && preferences.preferred_artists.length > 0) ||
+      (preferences.preferred_genres && preferences.preferred_genres.length > 0);
+    
+    if (hasPreferences) {
+      nav("/home");      // user has preferences, skip preferences page
+    } else {
+      nav("/artists");  // no preferences yet, show preferences page
+    }
+    // nav("/artists");
+    
+  } catch (e) {
+    console.error("❌ Login failed:", e);
+    setErr(e?.response?.data?.error || "Invalid credentials");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="min-h-screen bg-[#0d0f12] text-white px-6 py-10 flex flex-col">
