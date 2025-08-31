@@ -3,6 +3,10 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
+from rest_framework import serializers
+from music.models import Artist, Genre
+from music.serializers import ArtistSerializer, GenreSerializer
+from .models import User
 
 User = get_user_model()
 
@@ -35,6 +39,34 @@ from rest_framework import serializers
 from users.models import User
 
 class UserSerializer(serializers.ModelSerializer):
+     preferred_artists = ArtistSerializer(many=True)
+     preferred_genres = GenreSerializer(many=True)
+     class Meta:
+        model = User
+        fields = ["id", "username", "avatar_url", "interests", "moods","preferred_artists", "preferred_genres"]
+
+
+
+class PreferencesWriteSerializer(serializers.Serializer):
+    artist_ids = serializers.ListField(
+        child=serializers.IntegerField(), allow_empty=True
+    )
+    genre_ids = serializers.ListField(
+        child=serializers.IntegerField(), allow_empty=True
+    )
+
+    def validate(self, data):
+        # enforce limits
+        if len(data["artist_ids"]) > 5:
+            raise serializers.ValidationError("You can select up to 5 artists.")
+        if len(data["genre_ids"]) > 10:
+            raise serializers.ValidationError("You can select up to 10 genres.")
+        return data
+
+class PreferencesReadSerializer(serializers.ModelSerializer):
+    preferred_artists = ArtistSerializer(many=True)
+    preferred_genres = GenreSerializer(many=True)
+
     class Meta:
         model = User
-        fields = ["id", "username", "avatar_url", "interests", "moods"]
+        fields = ["preferred_artists", "preferred_genres"]

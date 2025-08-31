@@ -1,8 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
 
-/* @tailwind base; */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
 @import "tailwindcss/preflight";
-/* @tailwind components; */
 @tailwind utilities;
 
 @theme {
@@ -36,7 +34,6 @@
     animation: flash 0.3s ease-in-out;
   }
 } */
-
 
 
 

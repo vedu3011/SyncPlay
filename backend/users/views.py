@@ -1,4 +1,5 @@
 # users/views.py
+from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from django.contrib.auth.hashers import make_password
 from rest_framework.views import APIView
@@ -43,6 +44,7 @@ class RegisterView(APIView):
         return Response({"message": "Registered successfully. Please sign in."}, status=201)
 
 
+
 class LoginView(APIView):
     authentication_classes = []
     permission_classes = []
@@ -55,9 +57,44 @@ class LoginView(APIView):
         if not user:
             return Response({"error": "Invalid username or password."}, status=401)
 
-        access = make_jwt({"sub": user.id, "username": user.username})
+        # Use SimpleJWT to generate tokens
+        refresh = RefreshToken.for_user(user)
 
-        return Response({
-            "access": access,
+
+        response_data = {  # ✅ Use different variable name
+            "access": str(refresh.access_token),
+            "refresh": str(refresh),
             "user": UserSerializer(user).data
-        }, status=200)
+        }
+        
+        print("🔍 Backend sending:", response_data)  # Debug log
+        return Response(response_data, status=200)  # ✅ Correct
+
+
+# backend/users/views.py
+from rest_framework import permissions, status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from music.models import Artist, Genre
+from .serializers import PreferencesWriteSerializer, PreferencesReadSerializer
+
+class PreferencesView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        ser = PreferencesReadSerializer(request.user)
+        return Response(ser.data)
+
+    def post(self, request):
+        ser = PreferencesWriteSerializer(data=request.data)
+        ser.is_valid(raise_exception=True)
+
+        artist_ids = ser.validated_data["artist_ids"]
+        genre_ids = ser.validated_data["genre_ids"]
+
+        # set relations
+        request.user.preferred_artists.set(Artist.objects.filter(id__in=artist_ids))
+        request.user.preferred_genres.set(Genre.objects.filter(id__in=genre_ids))
+        request.user.save()
+
+        return Response({"message": "Preferences saved"}, status=status.HTTP_200_OK)
