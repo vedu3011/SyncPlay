@@ -58,7 +58,7 @@ export default function SignUp() {
 
         <div>
           <div className="w-full flex gap-[8px] items-baseline">
-            <RiLockPasswordLine />
+            <div><RiLockPasswordLine /></div>
             <input
           name="password" type={showPassword ? "text" : "password"} placeholder="Enter Password" value={form.password} onChange={onChange}
           className="w-full bg-transparent px-4 py-3 focus:outline-none focus:border-pink-500"
@@ -72,7 +72,7 @@ export default function SignUp() {
         
         <div>
           <div className="w-full flex gap-[8px] items-baseline">
-            <RiLockPasswordLine />
+            <div><RiLockPasswordLine /></div>
             <input
           name="confirm" type={showConfirm ? "text" : "password"} placeholder="Confirm Password" value={form.confirm} onChange={onChange}
           className="w-full bg-transparent px-4 py-3 focus:outline-none focus:border-pink-500"
