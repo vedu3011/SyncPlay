@@ -2,9 +2,10 @@
 from django.urls import path
 from .views_playlists import (
     MyPlaylistsView, MyPlaylistDetailView,
-    AddTrackToPlaylistView, RemoveTrackFromPlaylistView,
-    ToggleFavouriteView,
+    AddTrackToPlaylistView, RemoveTrackFromPlaylistView, ToggleFavouriteView
 )
+
+
 from .views import ArtistDetailView, ArtistListView, CombinedSearchView, GenreListView, HomeSummaryView,  PlaylistDetailView,  RecordPlayedView, SavePreferencesView
 
 urlpatterns = [
@@ -21,4 +22,5 @@ urlpatterns = [
     path("my-playlists/<int:playlist_id>/add-track/", AddTrackToPlaylistView.as_view()),
     path("my-playlists/<int:playlist_id>/tracks/<str:video_id>/", RemoveTrackFromPlaylistView.as_view()),
     path("favourites/toggle/", ToggleFavouriteView.as_view()),
+   
 ]

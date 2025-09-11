@@ -1,7 +1,6 @@
 # backend/music/serializers.py
 from rest_framework import serializers
 from .models import Artist, Genre, Playlist, PlaylistItem, UserHistory
-
 class ArtistSerializer(serializers.ModelSerializer):
     class Meta:
         model = Artist
@@ -22,6 +21,8 @@ class TrackSerializer(serializers.Serializer):
     duration_sec = serializers.IntegerField()
 
 
+
+
 class PlaylistSerializer(serializers.Serializer):
     id = serializers.CharField()
     title = serializers.CharField()
@@ -29,6 +30,8 @@ class PlaylistSerializer(serializers.Serializer):
     source = serializers.CharField()
     track_count = serializers.IntegerField(required=False)
     songs = TrackSerializer(many=True, required=False) 
+    
+    
 
 class HistoryItemSerializer(serializers.ModelSerializer):
     class Meta:
@@ -55,7 +58,7 @@ class PlaylistListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Playlist
-        fields = ("id", "name", "is_favourites", "is_custom", "track_count", "created_at")
+        fields = ("id", "name", "is_favourites", "is_custom", "track_count", )
 
 
 class PlaylistDetailSerializer(serializers.ModelSerializer):
@@ -63,7 +66,7 @@ class PlaylistDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Playlist
-        fields = ("id", "name", "is_favourites", "is_custom", "created_at", "tracks")
+        fields = ("id", "name", "is_favourites", "is_custom", "tracks")
 
 
 class CreatePlaylistSerializer(serializers.Serializer):
@@ -82,3 +85,5 @@ class TrackWriteSerializer(serializers.Serializer):
     artist_name = serializers.CharField(allow_blank=True, required=False, default="")
     thumbnail_url = serializers.CharField(allow_blank=True, required=False, default="")
     duration_sec = serializers.IntegerField(required=False, default=0)    
+
+    

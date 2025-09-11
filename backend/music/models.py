@@ -1,9 +1,12 @@
 # backend/music/models.py
+from time import timezone
 from django.db import models
 from django.utils.text import slugify
-
+from social.models import Friendship
 from django.conf import settings  # ✅ Correct Django way
+from django.utils import timezone
 
+User = settings.AUTH_USER_MODEL
 class Artist(models.Model):
     name = models.CharField(max_length=255, unique=True)
     image_url = models.URLField(blank=True, null=True)
@@ -59,8 +62,7 @@ class Playlist(models.Model):
     track_count = models.IntegerField(default=0)
     is_favourites = models.BooleanField(default=False)   # special auto-managed playlist
     is_custom = models.BooleanField(default=True)        # custom created by user
-    created_at = models.DateTimeField(auto_now_add=True)
-
+   
     def __str__(self):
         return self.title
     class Meta:
@@ -79,6 +81,7 @@ class PlaylistItem(models.Model):
     thumbnail_url = models.URLField(blank=True, default="")
     duration_sec = models.IntegerField(default=0)
     added_at = models.DateTimeField(auto_now_add=True)
+   
 
     class Meta:
         unique_together = [("playlist", "video_id")]  # Avoid duplicates inside the same playlist
@@ -103,3 +106,5 @@ class UserHistory(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.title}"    
+    
+    

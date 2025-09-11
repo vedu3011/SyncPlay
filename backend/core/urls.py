@@ -26,4 +26,7 @@ urlpatterns = [
     path("api/", include("users.urls")),
     path("api/music/", include("music.urls")),
     path("api/users/", include("users.urls")),
+    path("api/social/", include("social.urls")),
+    path("api/chat/", include("chat.urls")),
+    path("api/jam/", include("jam.urls")),
 ]

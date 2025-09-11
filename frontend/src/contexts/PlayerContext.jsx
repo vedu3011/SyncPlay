@@ -292,6 +292,10 @@ export function PlayerProvider({ children }) {
   const setFullPlayer = (isOpen) => {
     dispatch({ type: 'SET_FULL_PLAYER', payload: isOpen });
   };
+  const setIsPlaying = (playing) => {
+  dispatch({ type: "SET_PLAYING", payload: playing });
+};
+
 
   const value = {
     ...state,
@@ -302,6 +306,7 @@ export function PlayerProvider({ children }) {
     seekTo,
     toggleFullPlayer,
     setFullPlayer,
+    setIsPlaying
   };
 
   return <PlayerContext.Provider value={value}>{children}</PlayerContext.Provider>;
