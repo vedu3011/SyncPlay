@@ -4,6 +4,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from django.db import transaction
+from rest_framework.decorators import api_view
+
+from social.models import Friendship
 
 from .models import Playlist, PlaylistItem
 from .serializers import (
@@ -26,7 +29,7 @@ class MyPlaylistsView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
-        pls = Playlist.objects.filter(user=request.user).order_by("-is_favourites", "-created_at")
+        pls = Playlist.objects.filter(user=request.user).order_by("-is_favourites", "-id")
         data = PlaylistListSerializer(pls, many=True).data
         return Response(data)
 
@@ -123,3 +126,5 @@ class ToggleFavouriteView(APIView):
          return Response({"message": "Added to favorites"}, status=201)
         else:
          return Response({"message": "Already in favorites"}, status=200)
+
+

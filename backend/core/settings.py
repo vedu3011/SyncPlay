@@ -38,13 +38,16 @@ INSTALLED_APPS = [
     "users",
     "music",
     "rooms",
+    "social",
+    "chat",
+    "jam"
 ]
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
@@ -91,26 +94,52 @@ SIMPLE_JWT = {
 }
 
 
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "NAME": "postgres",
+#         "USER": "postgres",
+#         "PASSWORD": os.getenv("SUPABASE_DB_PASSWORD"),
+#         "HOST": "db.smdstfmcytlnhcdmxzcv.supabase.co",
+#         "PORT": "5432",
+#         "OPTIONS": {
+#             "sslmode": "require",
+#         }
+#     }
+# }
+
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": "postgres",
-        "USER": "postgres",
+        "USER": "postgres.smdstfmcytlnhcdmxzcv",
         "PASSWORD": os.getenv("SUPABASE_DB_PASSWORD"),
-        "HOST": "db.smdstfmcytlnhcdmxzcv.supabase.co",
-        "PORT": "5432",
+        "HOST": "aws-1-ap-south-1.pooler.supabase.com",
+        "PORT": "5432",  # As shown on your dashboard
         "OPTIONS": {
             "sslmode": "require",
         }
     }
 }
+
+
+
+
+# import dj_database_url
+
+# DATABASES = {
+#     "default": dj_database_url.config(default=os.getenv("POSTGRES_URL"))
+# }
+
+
 # Channels (WebSockets)
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer",  # Use Redis in production
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {"hosts": [os.getenv("REDIS_URL", "redis://127.0.0.1:6379/0")]},
     }
 }
-
 # Django REST Framework
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
@@ -141,6 +170,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
 ]
+CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_ALL_ORIGINS = True  # Dev only
 
 # Internationalization
