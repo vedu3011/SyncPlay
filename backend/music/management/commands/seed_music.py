@@ -28,7 +28,7 @@ ARTISTS = [
     {"name": "Udit Narayan", "image_url": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400"},
     {"name": "Alka Yagnik", "image_url": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400"},
     {"name": "Sonu Nigam", "image_url": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400"},
-    {"name": "Abhijeet", "image_url": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400"},
+    {"name": "Abhijeet", "image_url": "https://res.cloudinary.com/drbqgfk0q/image/upload/v1756674704/abhijeet_r46xtq.png"},
     {"name": "Kavita Krishnamurthy", "image_url": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400"},
     
     # Modern Bollywood Playback Singers
@@ -64,7 +64,7 @@ ARTISTS = [
     {"name": "When Chai Met Toast", "image_url": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400"},
     
     # Tamil/Regional
-    {"name": "A.R. Rahman", "image_url": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400"},
+    {"name": "A.R. Rahman", "image_url": "https://res.cloudinary.com/drbqgfk0q/image/upload/v1756671851/a_r_rahman_qcdkbo.jpg"},
     {"name": "Anirudh Ravichander", "image_url": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400"},
     {"name": "Yuvan Shankar Raja", "image_url": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400"},
     {"name": "Santhosh Narayanan", "image_url": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400"},
@@ -304,7 +304,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         for a in ARTISTS:
-            Artist.objects.get_or_create(name=a["name"], defaults={"image_url": a["image_url"], "popularity": 50})
+            Artist.objects.update_or_create(name=a["name"], defaults={"image_url": a["image_url"], "popularity": 50})
         for g in GENRES:
             Genre.objects.get_or_create(name=g)
         self.stdout.write(self.style.SUCCESS("Seeded artists and genres successfully"))

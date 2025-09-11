@@ -33,7 +33,7 @@ export default function Landing() {
 
       <button
         onClick={() => nav("/signup")}
-        className="w-[256px] rounded-2xl text-lg font-semibold text-white z-10">
+        className="button-style w-[256px] rounded-2xl text-lg font-semibold text-white z-10">
         <div>Get Started</div>
       </button>
     </div>
