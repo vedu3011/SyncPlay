@@ -27,7 +27,7 @@ export default function SelectGenres() {
     setSelected((prev) => {
       const exists = prev.includes(id);
       if (exists) return prev.filter((x) => x !== id);
-      if (prev.length >= 10) return prev; // cap if needed
+      if (prev.length >= 5) return prev; // cap if needed
       return [...prev, id];
     });
   };
@@ -43,28 +43,49 @@ export default function SelectGenres() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0d0f12] text-white px-6 py-8 flex flex-col">
-      <div className="flex items-center justify-between mb-6">
-        <div className="text-sm text-gray-400">Welcome back! {username ? `, ${username}` : ""}</div>
-        <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-pink-500 to-orange-400 flex items-center justify-center text-white">S</div>
+    <div className="min-h-screen w-screen bg-[#010101] text-white px-6 py-10 flex flex-col items-center gap-[8px] overflow-hidden relative">
+      
+      <div className="flex gap-[96px] items-center justify-between mb-6">
+        <div className="text-sm text-gray-400">
+          <h4>Welcome back!</h4> 
+          <p>{username ? `${username}` : ""}</p>
+        </div>
+        <div className="flex items-center justify-center">
+          <img
+          src="../assets/syncplay_logo.png"
+          alt="logo"
+          className="w-[26px] h-[30px] object-contain flex justify-center relative z-10"
+        /></div>
       </div>
 
-      <h1 className="text-2xl font-bold mb-2">Set Your Preferences</h1>
-      <p className="text-gray-400 mb-4">Select your favorites</p>
+      <h1 className="text-[26px] font-extrabold">Set Your Preferences</h1>
+      <p className="text-gray-400 mb-4">Select your 5 favorites</p>
 
-      <div className="space-y-3 overflow-y-auto">
+      <div className="grid grid-cols-2 gap-[20px] overflow-y-auto">
         {genres.map((g, idx) => {
           const active = selected.includes(g.id);
-          const color = ["bg-pink-500","bg-yellow-400","bg-green-500","bg-blue-500"][idx % 4];
+          const colors = ["border-l-[#FF7777]", // red
+          "border-l-[#FFFA77]", // yellow  
+          "border-l-[#77FF95]"  // green
+          ];
+          const color = colors[idx % 3]; 
           return (
             <button
               key={g.id}
               onClick={() => toggle(g.id)}
-              className={`w-full flex items-center gap-3 rounded-xl px-4 py-3 border border-gray-700
-                ${active ? "bg-gray-800 ring-2 ring-pink-500" : "bg-transparent"}`}
+              className={`relative flex items-center h-16 py-[8px] transition-all duration-200 border-l-[8px] ${color} rounded-xl overflow-hidden
+              ${active 
+                ? "bg-[#1D2729] shadow-md shadow-pink-500/30" : "bg-[#0E1516]"
+              }`}
+              style={{ 
+              borderTopRightRadius: '0.75rem', 
+              borderBottomRightRadius: '0.75rem',
+              borderTopLeftRadius: '0.75rem',
+              borderBottomLeftRadius: '0.75rem'
+              }}
             >
-              <span className={`w-2 h-6 rounded ${color}`} />
-              <span className="text-sm">{g.name}</span>
+              {/* <span className={`w-2 h-full rounded-l-md ${color}`} /> */}
+              <span className="w-full ml-3 text-xs text-center text-white">{g.name}</span>
             </button>
           );
         })}
@@ -74,7 +95,7 @@ export default function SelectGenres() {
         <button
           onClick={submit}
           disabled={artist_ids.length === 0}
-          className="w-full py-3 rounded-xl text-lg font-semibold bg-gradient-to-r from-pink-500 to-orange-400 disabled:opacity-50"
+          className="button-style w-full py-3 rounded-xl text-lg font-semibold"
         >
           Ready to GOOO....
         </button>

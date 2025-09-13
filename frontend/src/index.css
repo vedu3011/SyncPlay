@@ -70,9 +70,12 @@ body {
   min-height: 100vh;
 }
 
+button{
+  cursor: pointer;
+}
 
 
-button {
+.button-style {
   border-radius: 8px;
   border: 3px solid transparent;
   padding: 0.6em 1.2em;
@@ -86,6 +89,33 @@ button {
   /* border-radius: 16px; */
   transition: border-color 0.25s;
 }
+
+.border-img{
+  border: 2px solid transparent;
+  border-radius: 9999px;
+  border-image: linear-gradient(135deg, #FF512F, #DD2476) 3;
+}
+
+.gradient-border {
+  position: relative;
+  border-radius: 9999px; /* fully round */
+  overflow: hidden;
+}
+
+.gradient-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 3px; /* border thickness */
+  border-radius: inherit;
+  background: linear-gradient(135deg, #FF512F, #DD2476);
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
 
 /* button:hover {
   border-color: #1a1a1a;

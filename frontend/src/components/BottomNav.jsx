@@ -1,5 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import { GoHome } from "react-icons/go";
 
 export default function BottomNav() {
   const containerStyle = {
@@ -38,7 +39,7 @@ export default function BottomNav() {
             : linkStyle
         }
       >
-        🏠
+        <GoHome />
       </NavLink>
       <NavLink
         to="/search"

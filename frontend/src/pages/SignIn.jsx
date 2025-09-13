@@ -105,7 +105,7 @@ const submit = async (e) => {
 
         <button
           disabled={loading}
-          className="w-full py-3 rounded-xl text-lg font-semibold bg-gradient-to-r from-pink-500 to-orange-400 disabled:opacity-50"
+          className="button-style w-full py-3 rounded-xl text-lg font-semibold"
         >
           {loading ? "Signing in..." : "Sign In"}
         </button>
