@@ -16,10 +16,21 @@ import ArtistDetail from "./pages/ArtistDetail";
 import Search from "./pages/Search.jsx";
 import PlaylistsPage from "./pages/PlaylistsPage";
 import MyPlaylistDetail from "./pages/MyPlaylistDetail"; 
+import ChatList from "./pages/ChatList";
+import ChatRoom from "./pages/ChatRoom";
+import PlaylistView from "./pages/PlaylistView.jsx";
+import JamUI from "./pages/JamUI.jsx";
+import { Toaster } from "react-hot-toast";
+import Rooms from "./pages/Rooms";
+import CreateRoom from "./pages/CreateRoom";
+import JoinRoom from "./pages/JoinRoom";
+import RoomView from "./pages/RoomView";
+
+
 
 // Create placeholder components for missing pages
-const Chat = () => <div className="p-4">Chat Page - Coming Soon</div>;
-const Rooms = () => <div className="p-4">Rooms Page - Coming Soon</div>;
+
+
 
 
 const RequireAuth = ({ children }) => {
@@ -51,6 +62,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <PlayerProvider>
+        <Toaster position="top-right" />
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/signup" element={<SignUp />} />
@@ -79,28 +91,6 @@ export default function App() {
               </RequireAuth>
             }
           />
-          <Route
-            path="/chat"
-            element={
-              <RequireAuth>
-                <MainLayout>
-                  <Chat />
-                </MainLayout>
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/rooms"
-            element={
-              <RequireAuth>
-                <MainLayout>
-                  <Rooms />
-                </MainLayout>
-              </RequireAuth>
-            }
-          />
-          
-          
           {/* Detail pages */}
           <Route
             path="/playlist/:id"
@@ -124,8 +114,27 @@ export default function App() {
           />
           <Route path="/playlists" element={<RequireAuth><MainLayout><PlaylistsPage /></MainLayout></RequireAuth>} />
         <Route path="/my-playlist/:id" element={<RequireAuth><MainLayout><MyPlaylistDetail /></MainLayout></RequireAuth>} />
+        
+        <Route path="/chat" element={<RequireAuth><MainLayout><ChatList /></MainLayout></RequireAuth>} />
+        <Route path="/chat/:fid" element={<RequireAuth><MainLayout><ChatRoom /></MainLayout></RequireAuth>} />
+        {/* <Route path="/playlist/:id" element={<RequireAuth><MainLayout><PlaylistView /></MainLayout></RequireAuth>} /> */}
+        <Route
+  path="/jam/playlists/by_friendship/:id"
+  element={
+    <RequireAuth>
+      <MainLayout>
+        <PlaylistView /> {/* Or create a new JamFriendshipPlaylist component */}
+      </MainLayout>
+    </RequireAuth>
+  }
+/>
+          <Route path="/rooms" element={<RequireAuth><MainLayout><Rooms /></MainLayout></RequireAuth>} />
+        <Route path="/rooms/create" element={<RequireAuth><MainLayout><CreateRoom /></MainLayout></RequireAuth>} />
+        <Route path="/rooms/join" element={<RequireAuth><MainLayout><JoinRoom /></MainLayout></RequireAuth>} />
+        <Route path="/rooms/:roomId" element={<RequireAuth><MainLayout><RoomView /></MainLayout></RequireAuth>} />
+
           {/* Fallback route */}
-          <Route path="*" element={<Navigate to="/" />} />
+          {/* <Route path="*" element={<Navigate to="/" />} /> */}
         </Routes>
       </PlayerProvider>
     </BrowserRouter>
