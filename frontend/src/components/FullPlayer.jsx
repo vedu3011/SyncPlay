@@ -23,6 +23,7 @@ export default function FullPlayer() {
   const [myPlaylists, setMyPlaylists] = useState([]);
   const [toast, setToast] = useState(null);
   const { playSong } = usePlayer();
+  const [isFavorited, setIsFavorited] = useState(false);
 
   const {
     currentSong,
@@ -87,6 +88,7 @@ const onToggleFavourite = async () => {
     if (!trackPayload) return;
     try {
       const res = await toggleFavourite(trackPayload);
+      setIsFavorited(res.favourited); // Update local state
       showToast(res.favourited ? "Added to favourites" : "Removed from favourites");
     } catch (e) {
       showToast("Failed to toggle favourite");
@@ -119,87 +121,94 @@ const addToPlaylist = async (playlistId) => {
   const upcomingSongs = queue.slice(currentIndex + 1, currentIndex + 6);
 
   return (
-    <div 
+    <div className='w-screen'
       style={{
         position: 'fixed',
         top: 0,
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor: '#0d0f12',
+        backgroundColor: '#010101',
         color: 'white',
         zIndex: 15000,
-        overflowY: 'auto'
+        overflowY: 'auto',
+        padding: '12px' , 
       }}
     >
-      <div className="p-4 pb-20">
+      <div className="flex flex-col justify-around h-screen p-4 pb-[16px]">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <button 
             onClick={() => setFullPlayer(false)}
             className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-800 transition-colors"
           >
-            <ArrowLeft size={24} />
+            <ArrowLeft size={20} />
           </button>
-          <div className="text-sm text-gray-400">Now Playing</div>
-          <button className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-800 transition-colors">
+          {/* <div className="text-sm text-gray-400">Now Playing</div> */}
+          <div className="flex items-center gap-4">
+          <button className="w-10 h-10 items-center justify-center rounded-full hover:bg-gray-800 transition-colors hidden">
             <MoreHorizontal size={24} />
           </button>
+          </div>
         </div>
 
         {/* Song Title and Artist */}
-        <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold mb-2">{currentSong.title}</h1>
-          <p className="text-gray-400 text-lg">{currentSong.artist_name}</p>
+        <div className="text-left px-[12px]">
+          <h1 className="text-2xl font-bold">{currentSong.title}</h1>
+          <p className="text-gray-400 text-[12px]">{currentSong.artist_name}</p>
         </div>
 
         {/* Circular Album Art with Progress Ring */}
-        <div className="flex justify-center mb-8">
-          <div className="relative">
+        <div className="flex justify-center items-center mb-[8px]" >
+          <div className="relative w-full flex justify-center h-[272px]">
             {/* Progress Ring */}
-            <svg className="w-80 h-80 transform -rotate-90" viewBox="0 0 100 100">
+    <svg 
+      className="absolute inset-0 w-[264px] h-[264px] transform -rotate-90" 
+      viewBox="0 0 100 100"
+    >
               {/* Background Ring */}
-              <circle
-                cx="50"
-                cy="50"
-                r="45"
-                stroke="rgba(75, 85, 99, 0.3)"
-                strokeWidth="2"
-                fill="none"
-              />
+      <circle
+        cx="50"
+        cy="50"
+        r="45"
+        stroke="rgba(75, 85, 99, 0.3)"
+        strokeWidth="1"
+        fill="none"
+      />
               {/* Progress Ring */}
-              <circle
-                cx="50"
-                cy="50"
-                r="45"
-                stroke="rgb(236, 72, 153)"
-                strokeWidth="2"
-                fill="none"
-                strokeLinecap="round"
-                strokeDasharray={`${2 * Math.PI * 45}`}
-                strokeDashoffset={`${2 * Math.PI * 45 * (1 - progressPercentage / 100)}`}
-                className="transition-all duration-300"
-              />
-            </svg>
+      <circle
+        cx="50"
+        cy="50"
+        r="45"
+        stroke="#dd2476"
+        strokeWidth="2"
+        fill="none"
+        strokeLinecap="round"
+        strokeDasharray={`${2 * Math.PI * 45}`}
+        strokeDashoffset={`${2 * Math.PI * 45 * (1 - progressPercentage / 100)}`}
+        className="transition-all duration-300"
+      />
+    </svg>
             
             {/* Album Art */}
-            <div className="absolute inset-6 rounded-full overflow-hidden bg-gradient-to-br from-pink-500 to-purple-600">
+            <div className="absolute top-[32px] rounded-full overflow-hidden bg-gradient-to-br from-pink-500 to-purple-600 flex justify-center items-center">
               {currentSong.thumbnail_url ? (
                 <img
                   src={currentSong.thumbnail_url}
                   alt={currentSong.title}
-                  className="w-full h-full object-cover"
+                  className="w-[200px] h-[200px] rounded-full object-cover"
+          // style={{ width: '288px', height: '288px' }}
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
-                  <span className="text-4xl font-bold text-white">♪</span>
+                  <span className="text-[32px] font-bold text-white">♪</span>
                 </div>
               )}
             </div>
 
             {/* Time Display */}
-            <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2">
-              <span className="text-sm text-gray-400">
+            <div className="absolute bottom-[12px] left-1/2 transform -translate-x-1/2 px-[3px] bg-[#010101] block text-center">
+              <span className="text-[16px] text-white">
                 {formatTime(currentTime)}
               </span>
             </div>
@@ -207,64 +216,68 @@ const addToPlaylist = async (playlistId) => {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center justify-center gap-8 mb-8">
+        <div className="flex items-center justify-around text-[14px] px-[12px] w-full">
          
           <button
               onClick={onToggleFavourite}
               className="w-12 h-12 flex items-center justify-center rounded-full hover:bg-gray-800 transition-colors">
-              < Heart size={24} className="text-gray-400 hover:text-pink-400" />
+              < Heart size={20} className={`transition-colors ${
+      isFavorited 
+        ? "text-[#dd2476] fill-[#dd2476] border-4" 
+        : "text-gray-400 hover:text-pink-400"
+    }`}  />
            </button>
            <button
              onClick={openAddToPlaylist}
              className="flex items-center gap-2 px-4 py-2 bg-pink-500 hover:bg-pink-600 rounded-full transition-colors"
             >
-            <Plus size={20} />
+            <Plus size={18} />
              <span className="font-medium">Add to Playlist</span>
            </button>
           
           {/* Jam Together Button (replacing share) */}
           <button className="flex items-center gap-2 px-4 py-2 bg-pink-500 hover:bg-pink-600 rounded-full transition-colors">
-            <Plus size={20} />
+            <Plus size={18} />
             <span className="font-medium">Jam Together</span>
           </button>
         </div>
 
         {/* Player Controls */}
-        <div className="flex items-center justify-center gap-8 mb-8">
+        <div className="flex items-center justify-center gap-[32px] p-[16px]">
           <button
             onClick={handlePrevious}
             disabled={currentIndex === 0}
-            className="w-12 h-12 flex items-center justify-center rounded-full hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-12 h-12 flex items-center justify-center rounded-full hover:bg-gray-800 transition-colors disabled:opacity-50"
           >
-            <SkipBack size={28} />
+            <SkipBack size={20} />
           </button>
 
           <button
             onClick={handlePlay}
             disabled={isLoading}
-            className="w-16 h-16 flex items-center justify-center rounded-full bg-pink-500 hover:bg-pink-600 transition-colors disabled:opacity-50"
+            className="p-[4px] flex items-center justify-center rounded-full bg-[#dd2476] hover:bg-pink-600 transition-colors"
           >
             {isLoading ? (
               <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
             ) : isPlaying ? (
-              <Pause size={32} className="text-white" />
+              <Pause size={22} className="text-white" />
             ) : (
-              <Play size={32} className="text-white ml-1" />
+              <Play size={22} className="text-white ml-1" />
             )}
           </button>
 
           <button
             onClick={handleNext}
             disabled={currentIndex >= queue.length - 1}
-            className="w-12 h-12 flex items-center justify-center rounded-full hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-12 h-12 flex items-center justify-center rounded-full hover:bg-gray-800 transition-colors disabled:opacity-50"
           >
-            <SkipForward size={28} />
+            <SkipForward size={20} />
           </button>
         </div>
 
         {/* Progress Bar */}
         <div className="mb-8">
-          <div className="flex justify-between text-xs text-gray-400 mb-2">
+          <div className="hidden justify-between text-xs text-gray-400 mb-2">
             <span>{formatTime(currentTime)}</span>
             <span>{formatTime(duration)}</span>
           </div>

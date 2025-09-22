@@ -4,6 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { getArtistDetail } from "../lib/api";
 import BottomNav from "../components/BottomNav";
 import { usePlayer } from "../contexts/PlayerContext"; 
+import { IoArrowBackOutline } from "react-icons/io5";
 
 export default function ArtistDetail() {
   const { id } = useParams(); // browse_id
@@ -15,39 +16,46 @@ export default function ArtistDetail() {
     (async () => setData(await getArtistDetail(id)))();
   }, [id]);
 
-  if (!data) return <div className="min-h-screen bg-[#0d0f12] text-white p-4">Loading…</div>;
+  if (!data) return <div className="h-screen w-screen bg-[#010101] text-white flex items-center justify-center">Loading…</div>;
 
   return (
-    <div className="min-h-screen bg-[#0d0f12] text-white pb-16">
+    <div className="min-h-screen w-screen bg-[#010101] text-white p-[12px]">
       <div className="p-4">
-        <div className="flex items-center justify-between">
-          <button onClick={() => nav(-1)} className="text-xl">←</button>
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-pink-500 to-orange-400 flex items-center justify-center text-white">S</div>
+        <div className="flex items-center justify-between mb-[8px]">
+          <button onClick={() => nav(-1)} className="text-xl"><IoArrowBackOutline /></button>
+ <div className="flex items-center justify-center">
+          <img
+          src="../assets/syncplay_logo.png"
+          alt="logo"
+          className="w-[26px] h-[30px] object-contain flex justify-center relative z-10"
+        /></div>
         </div>
 
-        <div className="mt-3">
-          <div className="w-full h-48 rounded-xl overflow-hidden bg-[#222733]">
-            {data.image_url && <img src={data.image_url} className="w-full h-full object-cover" />}
+        <div className="mb-6 flex flex-col items-center">
+          <div className="w-full h-48 rounded-xl overflow-hidden bg-[#222733] mb-4 relative group">
+            {data.image_url && <img src={data.image_url} className="w-[280px] h-[280px] object-cover" />}
           </div>
-          <h1 className="text-2xl font-bold mt-3">{data.name}</h1>
-          <p className="text-gray-400 text-sm">Top songs</p>
+           <div className="flex w-full justify-between items-center gap-[8px] my-[12px]">
+          <h1 className="text-[20px] font-[600] font-bold mb-2">{data.name}</h1>
+          <p className="text-gray-400 text-sm mb-2">Top songs</p>
+          </div>
         </div>
-        <div className="mt-4 space-y-3">
+        <div className="flex flex-col gap-[8px] w-full items-center pb-[96px]">
   {data.songs.map((s, idx) => (
     <div
       key={idx}
-      className="flex items-center gap-3 p-2 rounded-xl bg-[#161a23]"
+      className="flex gap-[8px] items-center relative w-full cursor-pointer"
       onClick={() => playSong(s, { type: 'search', songs: data.songs })}
       style={{ cursor: 'pointer' }}  // optional for usability feedback
     >
-      <div className="w-12 h-12 rounded-md overflow-hidden bg-gray-700">
+      <div className="w-[56px] h-[56px] flex-shrink-0">
         {s.thumbnail_url && <img src={s.thumbnail_url} className="w-full h-full object-cover" />}
       </div>
-      <div className="flex-1 min-w-0">
-        <div className="text-sm font-semibold truncate">{s.title}</div>
-        <div className="text-xs text-gray-400 truncate">{s.artist_name}</div>
+      <div className="w-3/4 shrink-0">
+        <div className="text-[14px] font-semibold truncate">{s.title}</div>
+        <div className="text-[12px] text-[#777] truncate">{s.artist_name}</div>
       </div>
-      <button className="text-gray-400">⋮</button>
+      <button className="text-gray-400 hidden">⋮</button>
     </div>
   ))}
 </div>

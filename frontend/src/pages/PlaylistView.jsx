@@ -1,6 +1,4 @@
 
-
-
 // src/pages/PlaylistView.jsx
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
@@ -14,6 +12,7 @@ import {
 // import useJamSocket from "../hooks/useJamSocket";
 import useUnifiedSocket from "../hooks/useUnifiedSocket";
 import { usePlayer } from "../contexts/PlayerContext";
+import { IoArrowBackOutline } from "react-icons/io5";
 
 
 export default function PlaylistView() {
@@ -195,7 +194,7 @@ export default function PlaylistView() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0d0f12] text-white flex items-center justify-center">
+      <div className="h-screen w-screen bg-[#010101] text-white flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin w-8 h-8 border-2 border-pink-500 border-t-transparent rounded-full mx-auto mb-2" />
           <div>Loading playlist...</div>
@@ -206,7 +205,7 @@ export default function PlaylistView() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-[#0d0f12] text-white flex items-center justify-center">
+      <div className="min-h-screen bg-[#010101] text-white flex items-center justify-center">
         <div className="text-center">
           <div className="text-red-400 mb-4">⚠ {error}</div>
           <button
@@ -222,29 +221,29 @@ export default function PlaylistView() {
 
   if (!playlist) {
     return (
-      <div className="min-h-screen bg-[#0d0f12] text-white flex items-center justify-center">
+      <div className="min-h-screen bg-[#010101] text-white flex items-center justify-center">
         <div>Playlist not found</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#0d0f12] text-white pb-20">
+    <div className="min-h-screen w-screen p-[12px] bg-[#010101] text-white pb-20">
       {/* Header */}
-      <div className="p-4 border-b border-gray-800">
-        <div className="flex items-center justify-between mb-2">
+      <div className="border-b border-gray-800">
+        <div className="flex text-[14px] items-center mb-[2px]">
           <button
             onClick={goBack}
             className="text-gray-400 hover:text-white text-lg mr-3"
           >
-            ←
+            <IoArrowBackOutline />
           </button>
-          <div className="flex-1 flex items-center gap-4">
+          <div className="flex-1 flex items-center justify-around gap-4">
             <h1 className="text-xl font-bold">{playlist.name}</h1>
             <button
               onClick={handleStartJam}
               disabled={!connected}
-              className="px-3 py-2 bg-pink-600 rounded text-sm"
+              className="px-3 py-2 text-[#dd2476] rounded text-sm"
               title={
                 connected
                   ? "Start playing playlist for all participants"
@@ -257,7 +256,7 @@ export default function PlaylistView() {
           <div className="flex gap-2">
             <button
               onClick={handleSavePersonal}
-              className="px-3 py-2 bg-pink-500 rounded hover:bg-pink-600 transition text-sm"
+              className="px-3 py-2 bg-pink-500 rounded hover:bg-pink-600 transition text-sm hidden"
             >
               Save to My Library
             </button>
@@ -267,45 +266,46 @@ export default function PlaylistView() {
 
       {/* Search Section */}
       <div className="p-4">
-        <div className="mb-4">
+        <div className="w-full p-[8px] my-[8px] border border-bg-[#555] bg-[#101010] flex justify-between items-center"  style={{ borderRadius: '12px' }}>
           <input
+          type="search"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search songs to add..."
-            className="w-full p-3 rounded bg-[#161a23] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-500"
+            className="text-white bg-transparent outline-none flex-1"
           />
         </div>
         {searchResults.length > 0 && (
           <div className="mb-6">
             <h3 className="text-sm text-gray-300 mb-3">Search Results</h3>
-            <div className="space-y-2 max-h-64 overflow-y-auto">
+            <div className="flex flex-col gap-[8px] items-center py-[4px] w-full rounded hover:bg-gray-800">
               {searchResults.map((s, i) => {
                 const videoId = s.yt_video_id || s.videoId || s.video_id || i;
                 return (
                   <div
                     key={videoId}
-                    className="flex items-center gap-3 bg-[#111216] p-3 rounded hover:bg-[#151924] transition"
+                    className="flex w-full gap-[8px] items-center relative"
                   >
                     <img
                       src={s.thumbnail_url || s.thumbnail}
-                      className="w-12 h-12 object-cover rounded"
+                      className="w-[56px] h-[56px] object-cover"
                       alt=""
                       onError={(e) =>
                         (e.target.src =
                           "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQ4IiBoZWlnaHQ9IjQ4IiBmaWxsPSIjMzMzIi8+CjxwYXRoIGQ9Ik0yNCAzMkMxNi4yNjggMzIgMTAgMjUuNzMyIDEwIDE4UzE2LjI2OCA0IDI0IDRTMzggMTAuMjY4IDM4IDE4UzMxLjczMiAzMiAyNCAzMlpNMjQgMjhDMjkuNTI0IDI4IDM0IDIzLjUyNCAzNCAxOFMyOS41MjQgOCAyNCA4UzE0IDEyLjQ3NiAxNCAxOFMxOC40NzYgMjggMjQgMjhaIiBmaWxsPSIjNzc3Ii8+Cjwvc3ZnPgo="
                 )}
                     />
-                    <div className="flex-1 min-w-0">
-                      <div className="font-medium text-sm text-white truncate">
+                    <div className="w-1/2">
+                      <div className="font-medium text-[14px] text-white truncate">
                         {s.title}
                       </div>
-                      <div className="text-xs text-gray-400 truncate">
+                      <div className="text-[12px] text-[#777] truncate">
                         {s.artist_name || s.artist || "Unknown Artist"}
                       </div>
                     </div>
                     <button
                       onClick={() => handleAdd(s)}
-                      className="px-3 py-1 bg-green-500 rounded hover:bg-green-600 transition text-sm flex-shrink-0"
+                      className="px-3 py-1 bg-green-500 rounded hover:bg-green-600 transition text-sm flex-shrink-0 absolute right-[0px]"
                     >
                       Add
                     </button>
@@ -318,8 +318,8 @@ export default function PlaylistView() {
       </div>
 
       {/* Current Tracks */}
-      <div className="p-4">
-        <h2 className="text-lg font-semibold mb-3">Tracks</h2>
+      <div className="pb-[84px]">
+        <h2 className="text-lg font-semibold mt-[14px] mb-[4px]">Tracks</h2>
         {(!playlist.tracks || playlist.tracks.length === 0) ? (
           <div className="text-center text-gray-400 py-8">
             <div className="text-4xl mb-2">🎵</div>
@@ -327,44 +327,46 @@ export default function PlaylistView() {
             <div className="text-sm opacity-75">Search and add some songs above</div>
           </div>
         ) : (
-          <div className="space-y-2">
+          <div className="flex flex-col gap-[8px] w-full items-center">
             {playlist.tracks.map((t) => (
               <div
                 key={t.id}
-                className="flex items-center gap-3 bg-[#111216] p-3 rounded hover:bg-[#151924] transition"
+                className="flex gap-[8px] items-center relative w-full"
               >
                 <img
                   src={t.thumbnail_url}
-                  className="w-12 h-12 object-cover rounded"
+                  className="w-[56px] h-[56px] object-cover"
                   alt=""
                   onError={(e) =>
                     (e.target.src =
                       "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQ4IiBoZWlnaHQ9IjQ4IiBmaWxsPSIjMzMzIi8+CjxwYXRoIGQ9Ik0yNCAzMkMxNi4yNjggMzIgMTAgMjUuNzMyIDEwIDE4UzE2LjI2OCA0IDI0IDRTMzggMTAuMjY4IDM4IDE4UzMxLjczMiAzMiAyNCAzMlpNMjQgMjhDMjkuNTI0IDI4IDM0IDIzLjUyNCAzNCAxOFMyOS41MjQgOCAyNCA4UzE0IDEyLjQ3NiAxNCAxOFMxOC40NzYgMjggMjQgMjhaIiBmaWxsPSIjNzc3Ii8+Cjwvc3ZnPgo="
              ) }
                     />
-                <div className="flex-1 min-w-0">
-                  <div className="font-medium text-sm text-white truncate">{t.title}</div>
-                  <div className="text-xs text-gray-400 truncate">{t.artist_name}</div>
+                <div className="w-1/2 shrink-0">
+                  <div className="text-[14px] font-semibold truncate">{t.title}</div>
+                  <div className="text-[12px] text-[#777] truncate">{t.artist_name}</div>
                   {t.duration_sec > 0 && (
-                    <div className="text-xs text-gray-500">
+                    <div className="text-xs hidden text-gray-500">
                       {Math.floor(t.duration_sec / 60)}:{String(t.duration_sec % 60).padStart(2, "0")}
                     </div>
                   )}
                 </div>
                 {/* Play button to sync play */}
+                <div  className="flex flex-col gap-[4px] items-end absolute right-[0px]">
                 <button
                   onClick={() => handlePlaySong(t)}
-                  className="px-3 py-1 bg-blue-600 rounded hover:bg-blue-700 transition text-sm flex-shrink-0"
+                  className="hover:bg-blue-700 transition text-[12px] flex-shrink-0 font-[700]"
                 >
                   Play
                 </button>
                 <button
                   onClick={() => handleRemove(t.video_id)}
-                  className="px-3 py-1 bg-red-600 rounded hover:bg-red-700 transition text-sm flex-shrink-0"
+                  className="hover:bg-red-700 transition text-[12px] flex-shrink-0 text-[#FF512F]"
                   style={{ marginLeft: "0.5rem" }}
                 >
                   Remove
                 </button>
+                </div>
               </div>
             ))}
           </div>

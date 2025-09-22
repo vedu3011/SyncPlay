@@ -64,9 +64,10 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
+  padding: 0px 12px 12px 12px;
+  /* display: flex; */
   place-items: center;
-  min-width: 320px;
+  /* min-width: 320px; */
   min-height: 100vh;
 }
 

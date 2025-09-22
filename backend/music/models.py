@@ -62,6 +62,7 @@ class Playlist(models.Model):
     track_count = models.IntegerField(default=0)
     is_favourites = models.BooleanField(default=False)   # special auto-managed playlist
     is_custom = models.BooleanField(default=True)        # custom created by user
+    is_collaborative = models.BooleanField(default=False)
    
     def __str__(self):
         return self.title

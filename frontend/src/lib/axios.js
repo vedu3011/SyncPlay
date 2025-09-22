@@ -197,6 +197,3 @@ export default API;
   
 //   return await response.json();
 // };
-
-
-

@@ -338,10 +338,10 @@ export default function ChatList() {
   }, [q]);
 
   // Helper functions
-  const openChat = (fid) => {
+  const openChat = (fid, otherUser) => {
     // Reset unread count when opening chat
     setFriends(prev => prev.map(f => f.id === fid ? {...f, unread_count: 0} : f));
-    nav(`/chat/${fid}`);
+    nav(`/chat/${fid}`, { state: { otherUser } });
   };
 
   const sendReq = async (uid) => {
@@ -403,12 +403,12 @@ export default function ChatList() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0d0f12] text-white pb-20">
+    <div className="min-h-screen w-screen bg-[#010101] text-white p-[12px]">
       {/* Header */}
-      <div className="sticky top-0 bg-[#0d0f12] border-b border-gray-800 p-4">
-        <div className="flex items-center justify-between mb-3">
+      <div className="sticky top-0 w-full p-4">
+        <div className="flex items- center justify-between mb-3">
           <div>
-            <div className="text-xl font-bold">Chats</div>
+            <div className="text-[20px] font-[800]">Chats</div>
             {/* Connection Status */}
             <div className="flex items-center gap-2 text-xs">
               <div className={`w-2 h-2 rounded-full ${
@@ -423,7 +423,7 @@ export default function ChatList() {
           </div>
           <button 
             onClick={() => setShowAdd(!showAdd)} 
-            className="px-3 py-1.5 bg-pink-500 hover:bg-pink-600 rounded-lg transition-colors"
+            className="px-3 py-1.5 text-[#dd2476] hover:bg-pink-600 rounded-lg transition-colors"
           >
             {showAdd ? '✕' : '+ Add'}
           </button>
@@ -433,17 +433,17 @@ export default function ChatList() {
         {showAdd && (
           <div className="mb-4">
             <input
-              className="w-full bg-[#161a23] px-3 py-2 rounded-lg border border-gray-700 focus:border-pink-500 outline-none"
+              className="w-full bg-[#101010] p-[4px] pl-[12px] my-[8px] rounded-lg border border-gray-700 focus:border-pink-500 outline-none"
               placeholder="Search users..."
               value={q}
               onChange={(e) => setQ(e.target.value)}
             />
             {suggest.length > 0 && (
-              <div className="bg-[#161a23] rounded-lg mt-2 border border-gray-700">
+              <div className="bg-[#101010] p-[4px] rounded-lg mt-2 border border-gray-700">
                 {suggest.map(u => (
-                  <div key={u.id} className="flex items-center justify-between p-3 border-b border-gray-800 last:border-0">
+                  <div key={u.id} className="flex items-center justify-between p-[4px] border-b border-gray-800 last:border-0">
                     <div className="flex items-center gap-2">
-                      <div className={`w-8 h-8 rounded-full bg-gradient-to-r ${getAvatarColor(u.username)} flex items-center justify-center text-xs font-bold`}>
+                      <div className={`w-[32px] h-[32px] mr-[4px] rounded-full bg-[#555] ${getAvatarColor(u.username)} flex items-center justify-center text-xs font-bold`}>
                         {u.username?.charAt(0)?.toUpperCase() || '?'}
                       </div>
                       <span className="text-sm">{u.username}</span>
@@ -462,13 +462,13 @@ export default function ChatList() {
         )}
 
         {/* Tabs */}
-        <div className="flex gap-1 text-xs">
+        <div className="flex gap-1 text-xs justify-between my-[8px] mb-[16px]">
           {["all", "favorites", "active", "archived", "requests"].map(t => (
             <button 
               key={t} 
               onClick={() => setTab(t)} 
               className={`px-3 py-1.5 rounded-lg capitalize ${
-                tab === t ? "bg-pink-500 text-white" : "bg-[#161a23] text-gray-400"
+                tab === t ? "text-white border-b-2 border-[#fff]" : "text-[#555]"
               }`}
             >
               {t}
@@ -487,18 +487,18 @@ export default function ChatList() {
         {tab === "requests" ? (
           <div className="space-y-2">
             {requests.map(r => (
-              <div key={r.id} className="bg-[#161a23] p-3 rounded-lg">
+              <div key={r.id} className="p-3 rounded-lg">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className={`w-10 h-10 rounded-full bg-gradient-to-r ${getAvatarColor(r.sender.username)} flex items-center justify-center font-bold`}>
+                  <div className="flex items-center gap-3 mt-[8px]">
+                    <div className={`w-[48px] h-[48px] rounded-full bg-[#555] ${getAvatarColor(r.sender.username)} flex items-center justify-center font-bold`}>
                       {r.sender.username?.charAt(0)?.toUpperCase() || '?'}
                     </div>
-                    <div>
+                    <div className="ml-[8px]">
                       <div className="text-sm font-semibold">{r.sender.username}</div>
                       <div className="text-xs text-gray-400">{formatTime(r.created_at)}</div>
                     </div>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex gap-[8px]">
                     <button onClick={() => accept(r.id)} className="px-2 py-1 bg-green-600 rounded text-xs">Accept</button>
                     <button onClick={() => ignore(r.id)} className="px-2 py-1 bg-gray-600 rounded text-xs">Ignore</button>
                     <button onClick={() => reject(r.id)} className="px-2 py-1 bg-red-600 rounded text-xs">Reject</button>
@@ -514,7 +514,7 @@ export default function ChatList() {
             )}
           </div>
         ) : (
-          <div className="space-y-2">
+          <div className="space-y-2 flex flex-col gap-[4px]">
             {friends.map(f => {
               // const isOnline = onlineUsers.has(f.other_user.id);
               const isOnline = f.is_online;
@@ -523,15 +523,15 @@ export default function ChatList() {
               return (
                 <div 
                   key={f.id} 
-                  onClick={() => openChat(f.id)} 
+                  onClick={() => openChat(f.id, f.other_user)} 
                   className={`p-3 rounded-lg cursor-pointer transition-colors hover:bg-[#1a1f2e] ${
-                    unreadCount > 0 ? 'bg-[#161a23] border border-pink-500/30' : 'bg-[#161a23]'
+                    unreadCount > 0 ? 'bg-[#161a23] border border-pink-500/30' : ''
                   }`}
                 >
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 mt-[8px]">
                     {/* Avatar with online indicator */}
                     <div className="relative">
-                      <div className={`w-11 h-11 rounded-full bg-gradient-to-r ${getAvatarColor(f.other_user.username)} flex items-center justify-center text-sm font-bold`}>
+                      <div className={`w-[48px] h-[48px] rounded-full bg-[#555] ${getAvatarColor(f.other_user.username)} flex items-center justify-center text-sm font-bold`}>
                         {f.other_user.username?.charAt(0)?.toUpperCase() || '?'}
                       </div>
                       {isOnline && (
@@ -540,7 +540,7 @@ export default function ChatList() {
                     </div>
                     
                     {/* Chat info */}
-                    <div className="flex-1 min-w-0">
+                    <div className="flex-1 min-w-0 ml-[8px]">
                       <div className="flex items-center justify-between">
                         <div className={`text-sm font-semibold ${unreadCount > 0 ? 'text-white' : 'text-gray-200'}`}>
                           {f.other_user.username}
@@ -554,14 +554,14 @@ export default function ChatList() {
                             </div>
                           )}
                           {/* Timestamp */}
-                          <div className={`text-xs ${unreadCount > 0 ? 'text-gray-300' : 'text-gray-400'}`}>
+                          <div className={`text-xs ${unreadCount > 0 ? 'text-[#fff]' : 'text-[#555]'}`}>
                             {formatTime(f.last_message_at)}
                           </div>
                         </div>
                       </div>
                       
                       {/* Last message preview */}
-                      <div className={`text-xs mt-0.5 truncate ${unreadCount > 0 ? 'text-gray-300' : 'text-gray-400'}`}>
+                      <div className={`text-xs mt-0.5 truncate ${unreadCount > 0 ? 'text-gray-300' : 'text-[#555]'}`}>
                         {f.last_message_preview || (f.last_message_at ? "New message" : "No messages yet")}
                       </div>
                     </div>

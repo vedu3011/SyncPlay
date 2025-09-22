@@ -26,7 +26,7 @@ import CreateRoom from "./pages/CreateRoom";
 import JoinRoom from "./pages/JoinRoom";
 import RoomView from "./pages/RoomView";
 
-
+ 
 
 // Create placeholder components for missing pages
 
@@ -42,7 +42,7 @@ function MainLayout({ children }) {
   const { isFullPlayerOpen } = usePlayer();
 
   return (
-    <div className="min-h-screen bg-[#0d0f12] text-white relative">
+    <div className="min-h-screen bg-[#010101] text-white relative">
       {/* Main content */}
       <div className="pb-20">{children}</div>
 

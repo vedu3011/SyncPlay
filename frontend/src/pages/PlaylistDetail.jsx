@@ -5,6 +5,7 @@ import { getPlaylistDetail, getCustomPlaylistDetail, getSearchResults, addTrackT
 import BottomNav from "../components/BottomNav";
 import { usePlayer } from "../contexts/PlayerContext";
 import { Play, ArrowLeft, MoreHorizontal } from 'lucide-react';
+import { CgPentagonDown } from "react-icons/cg";
 
 export default function PlaylistDetail() {
   const { id } = useParams();
@@ -36,7 +37,7 @@ export default function PlaylistDetail() {
       } finally {
         setLoading(false);
       }
-    };
+    }; 
 
     if (id) fetchData();
   }, [id]);
@@ -118,7 +119,7 @@ const handleSavePlaylist = async () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0d0f12] text-white p-4 flex items-center justify-center">
+      <div className="h-screen w-screen bg-[#010101] text-white p-4 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-400 mx-auto mb-2"></div>
           <div>Loading playlist...</div>
@@ -129,7 +130,7 @@ const handleSavePlaylist = async () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-[#0d0f12] text-white p-4 flex items-center justify-center">
+      <div className="min-h-screen w-screen bg-[#010101] text-white p-4 flex items-center justify-center">
         <div className="text-center">
           <div className="text-red-400 mb-2">Error</div>
           <div className="text-gray-400 mb-4">{error}</div>
@@ -146,7 +147,7 @@ const handleSavePlaylist = async () => {
 
   if (!data) {
     return (
-      <div className="min-h-screen bg-[#0d0f12] text-white p-4 flex items-center justify-center">
+      <div className="min-h-screen w-screen bg-[#010101] text-white p-4 flex items-center justify-center">
         <div>No playlist data found</div>
       </div>
     );
@@ -155,27 +156,27 @@ const handleSavePlaylist = async () => {
   const songs = data.songs || data.tracks || [];
 
   return (
-    <div className="min-h-screen bg-[#0d0f12] text-white pb-16">
+    <div className="min-h-screen w-screen bg-[#010101] text-white p-[12px]">
       <div className="p-4">
         {/* Header */}
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-[8px]">
           <button 
             onClick={() => window.history.back()} 
             className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-800 transition-colors"
           >
-            <ArrowLeft size={24} />
+            <ArrowLeft size={20} />
           </button>
-          <div className="text-sm text-pink-400">+ Add Songs</div>
+          <div className="text-[14px] text-[#dd2476] hidden">+ Add Songs</div>
         </div>
-
+ 
         {/* Playlist Info */}
-        <div className="mb-6">
+        <div className="mb-6 flex flex-col items-center">
           <div className="w-full h-48 rounded-xl overflow-hidden bg-[#222733] mb-4 relative group">
             {data.cover_url && (
               <img 
                 src={data.cover_url} 
                 alt={data.title || "Playlist cover"}
-                className="w-full h-full object-cover" 
+                className="w-[280px] h-[280px] object-cover" 
               />
             )}
             {songs.length > 0 && (
@@ -189,21 +190,24 @@ const handleSavePlaylist = async () => {
               </button>
             )}
           </div>
-
-          <h1 className="text-2xl font-bold mb-2">{data.title || data.name || "Untitled Playlist"}</h1>
+          <div className="flex w-full justify-between items-center gap-[8px] my-[12px]">
+          <h1 className="text-[20px] font-[600] font-bold mb-2">{data.title || data.name || "Untitled Playlist"}</h1>
           {data.description && <p className="text-gray-400 text-sm mb-2">{data.description}</p>}
-          <p className="text-gray-400 text-xs">{songs.length} songs</p>
+          <div className="flex gap-[4px] items-center">
+          <p className="text-gray-400 text-[14px] text-nowrap">{songs.length} songs</p>
            {isExternalPlaylist && (
           <button
             className="px-4 py-2 mb-4 bg-pink-500 rounded text-white"
             onClick={handleSavePlaylist}
           >
-            Save Playlist
+            <CgPentagonDown size={32} />
           </button>
         )}
         </div>
+        </div>
+        </div>
 
-        {/* Song Search & Add */}
+        {/* Song Search & Add
         {!isExternalPlaylist && (
           <>
         <div className="mt-6">
@@ -234,19 +238,19 @@ const handleSavePlaylist = async () => {
             ))}
           </div>
         </div>
-        </> )}
+        </> )} */}
 
         {/* Songs List */}
-        <div className="space-y-2 mt-6">
+        <div className="flex flex-col gap-[8px] w-full items-center pb-[96px]">
           {songs.length > 0 ? (
             songs.map((song, idx) => (
               <div 
                 key={song.yt_video_id || idx} 
-                className="flex items-center gap-3 p-3 rounded-xl bg-[#161a23] hover:bg-[#1a1f28] transition-colors group cursor-pointer"
+                className="flex gap-[8px] items-center relative w-full cursor-pointer"
                 onClick={() => handlePlaySong(song, idx)}
               >
                 {/* Track Number / Play Icon */}
-                <div className="w-6 text-center flex-shrink-0">
+                <div className="w-6 text-center flex-shrink-0 hidden">
                   <span className="text-gray-400 text-sm group-hover:hidden">
                     {idx + 1}
                   </span>
@@ -254,12 +258,12 @@ const handleSavePlaylist = async () => {
                 </div>
 
                 {/* Thumbnail */}
-                <div className="w-12 h-12 rounded-md overflow-hidden bg-gray-700 flex-shrink-0">
+                <div className="w-[56px] h-[56px] flex-shrink-0">
                   {song.thumbnail_url ? (
                     <img 
                       src={song.thumbnail_url} 
                       alt={song.title}
-                      className="w-full h-full object-cover" 
+                      className="w-[56px] h-[56px] object-cover" 
                     />
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center">
@@ -269,18 +273,18 @@ const handleSavePlaylist = async () => {
                 </div>
 
                 {/* Song Info */}
-                <div className="flex-1 min-w-0">
-                  <div className="text-sm font-semibold truncate text-white group-hover:text-pink-400 transition-colors">
+                <div className="w-1/2 shrink-0">
+                  <div className="text-[14px] font-semibold truncate">
                     {song.title || "Unknown Track"}
                   </div>
-                  <div className="text-xs text-gray-400 truncate">
+                  <div className="text-[12px] text-[#777] truncate">
                     {song.artist_name || "Unknown Artist"}
                   </div>
                 </div>
 
                 {/* Duration */}
                 {song.duration_sec > 0 && (
-                  <div className="text-xs text-gray-400 flex-shrink-0">
+                  <div className="text-[12px] flex-shrink-0 absolute right-[0px]">
                     {Math.floor(song.duration_sec / 60)}:{(song.duration_sec % 60).toString().padStart(2, '0')}
                   </div>
                 )}
