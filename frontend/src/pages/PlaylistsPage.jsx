@@ -71,40 +71,43 @@ export default function PlaylistsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0d0f12] text-white pb-16 p-4">
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-xl font-semibold">Your Playlists</h1>
+    <div className="min-h-screen w-screen p-[12px] pb-[72px] bg-[#010101] text-white">
+      <div className="flex items-center justify-between mb-[8px]">
+        <h1 className="text-2xl font-semibold">Your Playlists</h1>
         <button
           onClick={() => setShowCreateModal(true)}
-          className="px-3 py-1 rounded-lg bg-pink-500"
+          className="rounded-lg text-[#dd2476] font-xs"
         >
           + New
         </button>
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-[20px]">
         {playlists.map((p) => (
           <div
             key={p.id}
-            className="relative bg-[#161a23] rounded-lg p-3 cursor-pointer"
+            className="relative bg-[#0E1516] rounded-[12px] p-3 cursor-pointer"
             onClick={() => nav(`/my-playlist/${p.id}`)}
           >
-            <div className="w-full h-24 bg-gray-700 rounded-md mb-2 flex items-center justify-center text-4xl">
+            <div className="w-full h-[96px] rounded-t-[12px] mb-2 flex items-center justify-center text-[32px]"
+            style={{ backgroundImage: 'linear-gradient(135deg, #FF512F, #dd2476)' }}>
               {p.is_favourites ? "❤️" : "🎵"}
             </div>
+            <div className="px-[8px] py-[4px]"> 
             <div className="text-sm font-semibold truncate">{p.name}</div>
-            <div className="text-xs text-gray-400">{p.track_count} songs</div>
+            <div className="text-[12px] text-[#777]">{p.track_count} songs</div>
+            </div>
 
-            <button
+            {/* <button
               onClick={(e) => {
                 e.stopPropagation();
                 openAddToCustomModal(p);
               }}
-              className="absolute top-2 right-2 text-pink-500 bg-gray-800 rounded-full w-7 h-7 flex items-center justify-center"
+              className="absolute top-2 right-2 text-pink-500 bg-gray-800 rounded-full w-7 h-7 items-center justify-center hidden"
               title={`Add ${p.name} to another playlist`}
             >
               +
-            </button>
+            </button> */}
           </div>
         ))}
       </div>

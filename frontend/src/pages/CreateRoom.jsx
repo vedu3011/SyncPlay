@@ -13,13 +13,21 @@ export default function CreateRoom() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0d0f12] text-white p-4">
+    <div className="h-screen w-screen bg-[#010101] flex flex-col justify-center items-center gap-[20px] mt-[-64px]">
       <h1 className="text-xl font-semibold mb-4">Create Room</h1>
-      <input className="w-full p-3 bg-[#161a23] rounded mb-3" placeholder="Room name" value={name} onChange={e=>setName(e.target.value)} />
-      <label className="flex items-center gap-2 text-sm mb-4">
+      
+      <input className="w-1/2 p-3 bg-transparent border-b border-gray-600 text-white focus:outline-none transition-colors"
+      style={{
+            borderBottomColor: name ? '#ec4899' : '#4b5563' // Pink when typing, gray when empty
+          }}
+      placeholder="Room name" value={name} onChange={e=>setName(e.target.value)} />
+      <div className=" flex w-1/2 justify-between items-center">
+      <label className="flex items-center gap-[2px] text-[12px] mb-4">
         <input type="checkbox" checked={isPrivate} onChange={e=>setIsPrivate(e.target.checked)} /> Private Room
       </label>
-      <button className="px-4 py-2 bg-pink-500 rounded" onClick={submit}>Create</button>
+      
+      <button className="px-3 py-1 rounded text-[#dd2476] hover:bg-pink-600 text-white" onClick={submit}>Create</button>
+      </div>
     </div>
   );
 }

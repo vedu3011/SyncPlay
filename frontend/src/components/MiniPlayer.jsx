@@ -471,12 +471,12 @@ export default function MiniPlayer() {
           style={{
             height: '100%',
             borderRadius: '9999px',
-            backgroundColor: '#ec4899',
+            backgroundColor: '#dd2476',
             transition: 'width 0.3s',
             width: `${progressPercentage}%`,
           }}
           onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#f9a8d4')}
-          onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#ec4899')}
+          onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#dd2476')}
         />
       </div>
     );
@@ -499,7 +499,7 @@ export default function MiniPlayer() {
                 style={{
                   width: '100%',
                   height: '100%',
-                  backgroundImage: 'linear-gradient(to bottom right, #ec4899, #8b5cf6)',
+                  backgroundImage: 'linear-gradient(to bottom right, #dd2476, #8b5cf6)',
                   display: 'flex',
                   justifyContent: 'center',
                   alignItems: 'center',
@@ -514,7 +514,9 @@ export default function MiniPlayer() {
           </div>
 
           <div style={songDetailsStyle}>
-            <p style={songTitleStyle}>{currentSong.title}</p>
+            <p style={songTitleStyle} 
+            // className='w-1/2 truncate'
+            >{currentSong.title}</p>
             <p style={artistNameStyle}>{currentSong.artist_name}</p>
           </div>
         </div>

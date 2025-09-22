@@ -228,6 +228,8 @@ import { getSearchResults } from "../lib/api";
 import useUnifiedSocket from "../hooks/useUnifiedSocket";
 import { useParams } from "react-router-dom";
 import { usePlayer } from "../contexts/PlayerContext";
+import { IoArrowBackOutline } from "react-icons/io5";
+
 
 export default function RoomView() {
   const { roomId } = useParams();
@@ -378,7 +380,7 @@ export default function RoomView() {
   };
 
   if (!room) return (
-    <div className="h-screen bg-[#0d0f12] text-white flex items-center justify-center">
+    <div className="h-screen w-screen bg-[#010101] text-white flex items-center justify-center">
       <div className="text-center">
         <div className="animate-spin w-8 h-8 border-2 border-pink-500 border-t-transparent rounded-full mx-auto mb-4"></div>
         <div>Loading room...</div>
@@ -387,17 +389,17 @@ export default function RoomView() {
   );
 
   return (
-    <div className="h-screen bg-[#0d0f12] text-white flex flex-col">
+    <div className="h-screen w-screen bg-[#010101] py-[12px]  text-white flex flex-col">
       {/* Header */}
-      <div className="p-4 border-b border-gray-800 flex items-center justify-between">
-        <div className="flex items-center gap-3">
+      <div className="p-[12px] pt-[0px] border-b border-gray-800 flex items-center justify-between">
+        <div className="flex items-center gap-[8px]">
           <button 
             onClick={() => window.history.back()} 
             className="text-gray-400 hover:text-white text-lg"
           >
-            ←
+            <IoArrowBackOutline />
           </button>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-[8px]">
             <div className="w-10 h-10 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 flex items-center justify-center">
               <span className="text-sm font-bold">🎵</span>
             </div>
@@ -409,11 +411,11 @@ export default function RoomView() {
             </div>
           </div>
         </div>
-        <button className="text-gray-400 hover:text-white">⋮</button>
+        <button className="text-gray-400 hover:text-white hidden">⋮</button>
       </div>
       
       {/* Chat Messages Area */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-2 pb-32">
+      <div className="flex-1 overflow-y-auto mt-[4px] space-y-2 mb-[110px]">
         {chatMessages.length === 0 && (
           <div className="text-center text-gray-400 mt-20">
             <div className="text-lg mb-2">🎵</div>
@@ -497,20 +499,21 @@ export default function RoomView() {
       )}
       
       {/* Chat Input Area */}
-      <div className="fixed bottom-0 left-0 right-0 p-4 bg-[#0d0f12] border-t border-gray-800 "
+      <div className="fixed bottom-0 flex flex-col w-full justify-center"
       style={{ bottom: "60px", zIndex: 15999 }}>
-        <div className="flex items-center gap-3 relative">
+        <div className="fixed w-[96%] bottom-[60px] m-[8px] bg-[#101010] rounded-[16px] border border-[#3b3b3b] px-[12px] z-[12000]">
+        <div className="flex items-center gap-3">
           {/* Plus Dropdown */}
           <div className="relative" ref={dropdownRef}>
             <button
-              className="w-12 h-12 bg-[#161a23] rounded-full flex items-center justify-center text-gray-400 hover:text-pink-500 transition-colors"
+              className="p-[12px] flex items-center justify-center text-gray-400 hover:text-pink-500 transition-colors"
               onClick={() => setShowDropdown(!showDropdown)}
             >
               <span className="text-xl">+</span>
             </button>
 
             {showDropdown && (
-              <div className="absolute  left-0 right-0 bottom-[60px] mb-2 bg-[#1a1f2e] rounded-lg shadow-lg p-2 min-w-[180px] z-50"
+              <div className="absolute left-0 right-0 bottom-[36px] mb-2 bg-[#0E1516] rounded-[8px] shadow-lg p-[8px] min-w-[160px] z-50 text-[12px]"
               style={{ boxShadow: "0 4px 8px rgba(0,0,0,0.3)" , maxHeight: 'calc(100vh - 60px)', overflowY: 'auto'}}>
              {/* <div 
   className="absolute bottom-[60px] left-1/2 transform -translate-x-1/2 
@@ -523,7 +526,7 @@ export default function RoomView() {
                     setShowSearch(true);
                     setShowDropdown(false);
                   }}
-                  className="w-full text-left px-4 py-3 hover:bg-[#252b3c] rounded-lg flex items-center gap-3 text-sm"
+                  className="w-full text-left px-4 py-3 hover:bg-[#252b3c] rounded-lg flex items-center gap-[4px] mb-[2px]"
                 >
                   <span>🔍</span>
                   Search & Add Music
@@ -534,7 +537,7 @@ export default function RoomView() {
                     setShowQueue(true);
                     setShowDropdown(false);
                   }}
-                  className="w-full text-left px-4 py-3 hover:bg-[#252b3c] rounded-lg flex items-center gap-3 text-sm"
+                  className="w-full text-left px-4 py-3 hover:bg-[#252b3c] rounded-lg flex items-center gap-[4px] mb-[2px]"
                 >
                   <span>🎵</span>
                   View Queue ({room.queue.length})
@@ -545,7 +548,7 @@ export default function RoomView() {
                     setShowSuggestions(true);
                     setShowDropdown(false);
                   }}
-                  className="w-full text-left px-4 py-3 hover:bg-[#252b3c] rounded-lg flex items-center gap-3 text-sm"
+                  className="w-full text-left px-4 py-3 hover:bg-[#252b3c] rounded-lg flex items-center gap-[4px] mb-[2px]"
                 >
                   <span>💡</span>
                   Suggestions ({room.suggestions.length})
@@ -556,7 +559,7 @@ export default function RoomView() {
                     setShowMembers(true);
                     setShowDropdown(false);
                   }}
-                  className="w-full text-left px-4 py-3 hover:bg-[#252b3c] rounded-lg flex items-center gap-3 text-sm"
+                  className="w-full text-left px-4 py-3 hover:bg-[#252b3c] rounded-lg flex items-center gap-[4px] mb-[2px]"
                 >
                   <span>👥</span>
                   Members ({room.members.length})
@@ -566,7 +569,7 @@ export default function RoomView() {
                 setShowDropdown(false);
                 setShowPlaylist(true);  // NEW: open playlist modal
                    }}
-                 className="w-full text-left px-4 py-3 rounded-lg hover:bg-slate-700 flex items-center gap-2"
+                 className="w-full text-left px-4 py-3 rounded-lg hover:bg-slate-700 flex items-center gap-[4px]"
                >
                <span>🎵</span> Playlist
               </button>
@@ -575,9 +578,9 @@ export default function RoomView() {
           </div>
           
           {/* Message Input */}
-          <div className="flex-1 flex items-center bg-[#161a23] rounded-full px-4 py-3">
+          <div className="flex-1 flex items-center">
             <input
-              className="flex-1 bg-transparent outline-none text-white placeholder-gray-400 text-sm"
+              className="flex-1 bg-transparent outline-none text-white placeholder-gray-400 text-sm py-[12px]"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Type a message..."
@@ -588,7 +591,7 @@ export default function RoomView() {
             <button 
               onClick={sendChatMsg} 
               disabled={!input.trim() || !isConnected}
-              className="ml-3 w-8 h-8 bg-pink-500 rounded-full flex items-center justify-center text-white disabled:bg-gray-600 disabled:cursor-not-allowed hover:bg-pink-600 transition-colors"
+              className="p-[12px] ml-3 w-8 h-8 bg-pink-500 rounded-full flex items-center justify-center text-white disabled:bg-gray-600 disabled:cursor-not-allowed hover:bg-pink-600 transition-colors"
             >
               <span className="text-sm">→</span>
             </button>
@@ -601,6 +604,7 @@ export default function RoomView() {
             <span className="text-red-400">⚠️ Not connected to room</span>
           </div>
         )}
+        </div>
       </div>
     </div>
   );
@@ -620,28 +624,33 @@ function ChatBubble({ mine, message, created_at, senderName }) {
   };
 
   return (
-    <div className={`flex ${mine ? 'justify-end' : 'justify-start'} mb-3`}>
-      <div className="relative max-w-[75%]">
+    <div className="flex flex-col bg-[#010101] gap-2 px-[12px] py-[4px]">
+    <div className={mine ? 'flex justify-end mb-3' : 'flex justify-start mb-3'}>
+      <div className="relative max-w-[80%] break-words">
         <div
-          className={`px-4 py-2 shadow-lg relative ${
-            mine 
-              ? "bg-gradient-to-r from-pink-500 to-pink-600 text-white rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl" 
-              : "bg-[#1a1f2e] text-white rounded-tr-2xl rounded-bl-2xl rounded-br-2xl"
-          }`}
+          className={
+                mine 
+              ? "bg-[#FF512F] text-[#fff]" 
+              : "bg-[#fff] text-[#0e1516]"
+          }
+           style={{
+    borderRadius: mine ? '16px 16px 0px 16px' : '16px 16px 16px 0px'
+  }}
         >
           {!mine && senderName && (
-            <div className="text-xs text-pink-400 mb-1 font-semibold">
+            <div className="text-[12px] text-pink-400 mb-1 font-semibold">
               {senderName}
             </div>
           )}
           <div className="text-sm leading-relaxed">
             {message}
           </div>
-          <div className={`text-[10px] mt-1 opacity-75 ${mine ? 'text-right' : 'text-left'}`}>
+          <div className={`text-[10px] pb-[4px] px-[8px] opacity-75 ${mine ? 'text-right' : 'text-left'}`}>
             {formatTime(created_at)}
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 }
@@ -649,16 +658,16 @@ function ChatBubble({ mine, message, created_at, senderName }) {
 // Modal Components
 function SearchModal({ search, setSearch, results, onSuggest, onStartJam, canControl, onClose }) {
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-end z-50">
-      <div className="bg-[#0d0f12] w-full max-h-[80vh] rounded-t-lg">
-        <div className="p-4 border-b border-gray-800 flex items-center justify-between">
+    <div className="fixed top-[0px] left-[0px] w-screen h-screen bg-[#010101] bg-opacity-50 flex z-50 overflow-y-auto pb-[48px]">
+      <div className="w-full h-[100px] rounded-t-lg p-[20px] pb-[120px] ">
+        <div className="p-4 flex items-center justify-between">
           <div className="text-lg font-semibold">Search Music</div>
           <button onClick={onClose} className="text-gray-400 hover:text-white text-xl">×</button>
         </div>
         
-        <div className="p-4">
-          <input 
-            className="w-full p-3 bg-[#161a23] rounded-lg text-white placeholder-gray-400"
+        <div className="w-full p-[8px] my-[8px] border border-bg-[#555] bg-[#101010] flex justify-between items-center"  style={{ borderRadius: '12px' }}>
+          <input type="search"
+            className="text-white bg-transparent outline-none flex-1"
             value={search} 
             onChange={(e) => setSearch(e.target.value)} 
             placeholder="Search for songs..."
@@ -666,19 +675,19 @@ function SearchModal({ search, setSearch, results, onSuggest, onStartJam, canCon
           />
         </div>
 
-        <div className="max-h-96 overflow-y-auto p-4 space-y-2">
+        <div className="flex flex-col gap-[8px] items-center py-[4px] w-full rounded hover:bg-gray-800 pb-[96px] overflow-y-auto">
           {results.map((track, i) => {
             const vid = track.yt_video_id || track.videoId || track.video_id || i;
             return (
-              <div key={vid} className="flex items-center gap-3 bg-[#111216] p-3 rounded-lg">
-                <img src={track.thumbnail_url || track.thumbnail} className="w-12 h-12 rounded" />
-                <div className="flex-1">
-                  <div className="text-sm font-semibold">{track.title}</div>
-                  <div className="text-xs text-gray-400">{track.artist_name || track.artist}</div>
+              <div key={vid} className="flex w-full gap-[8px] items-center relative">
+                <img src={track.thumbnail_url || track.thumbnail} className="w-[56px] h-[56px] object-cover" />
+                <div className="w-1/2">
+                  <div className="font-medium text-[14px] text-white truncate">{track.title}</div>
+                  <div className="text-[12px] text-[#777] truncate">{track.artist_name || track.artist}</div>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 absolute right-[0px]">
                   <button 
-                    className="px-3 py-1 bg-blue-500 rounded text-sm" 
+                    className="px-3 py-1 bg-green-500 rounded hover:bg-green-600 transition text-[12px] flex-shrink-0 " 
                     onClick={() => onSuggest(track)}
                   >
                     Suggest
@@ -706,14 +715,14 @@ function SearchModal({ search, setSearch, results, onSuggest, onStartJam, canCon
 
 function QueueModal({ queue, canControl, onPlay, onRemove, onSaveAsPersonal, onClose }) {
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-end z-50">
-      <div className="bg-[#0d0f12] w-full max-h-[80vh] rounded-t-lg">
-        <div className="p-4 border-b border-gray-800 flex items-center justify-between">
+    <div className="fixed top-[0px] left-[0px] w-screen h-screen bg-[#010101] bg-opacity-50 flex z-50 overflow-y-auto p-[20px] pb-[48px]">
+      <div className="w-full max-h-[80vh] rounded-t-lg">
+        <div className="pb-[12px] flex items-center justify-between">
           <div className="text-lg font-semibold">Queue</div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-[6px]">
             <button 
               onClick={onSaveAsPersonal}
-              className="px-3 py-1 bg-green-600 rounded text-sm"
+              className="px-3 py-1 bg-green-600 rounded text-[14px]"
             >
               Save as Personal
             </button>
@@ -721,16 +730,16 @@ function QueueModal({ queue, canControl, onPlay, onRemove, onSaveAsPersonal, onC
           </div>
         </div>
         
-        <div className="max-h-96 overflow-y-auto p-4 space-y-2">
+        <div className="flex flex-col gap-[8px] items-center py-[4px] w-full rounded hover:bg-gray-800">
           {queue.map(track => (
-            <div key={track.id} className="flex items-center gap-3 bg-[#111216] p-3 rounded-lg">
-              <img src={track.thumbnail_url} className="w-12 h-12 rounded" />
-              <div className="flex-1">
-                <div className="text-sm font-semibold">{track.title}</div>
-                <div className="text-xs text-gray-400">{track.artist_name}</div>
+            <div key={track.id} className="flex w-full gap-[8px] items-center relative">
+              <img src={track.thumbnail_url} className="w-[56px] h-[56px] object-cover"/>
+              <div className="w-1/2">
+                <div className="font-medium text-[14px] text-white truncate">{track.title}</div>
+                <div className="text-[12px] text-[#777] truncate">{track.artist_name}</div>
               </div>
               {canControl && (
-                <div className="flex gap-2">
+                <div className="px-3 py-1 bg-green-500 rounded hover:bg-green-600 transition text-sm flex-shrink-0 absolute right-[0px]">
                   <button 
                     className="px-3 py-1 bg-green-600 rounded text-sm" 
                     onClick={() => onPlay(track)}
@@ -760,24 +769,24 @@ function SuggestionsModal({ suggestions, canControl, onApprove, onClose }) {
   return (
     // <div className="fixed inset-0 bg-black bg-opacity-50 flex items-end  z-50">
     //   <div className="bg-[#0d0f12] w-full max-h-[80vh] rounded-t-lg">
-    <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
-  <div className="bg-[#111216] w-full max-w-md max-h-[80vh] rounded-lg shadow-lg flex flex-col">
-        <div className="p-4 border-b border-gray-800 flex items-center justify-between">
+    <div className="fixed top-[0px] left-[0px] w-screen h-screen bg-[#010101] bg-opacity-50 flex z-50 overflow-y-auto p-[20px] pb-[48px]">
+  <div className="w-full max-h-[80vh] rounded-t-lg">
+        <div className="pb-[12px] flex items-center justify-between">
           <div className="text-lg font-semibold">Suggestions</div>
           <button onClick={onClose} className="text-gray-400 hover:text-white text-xl">×</button>
         </div>
         
-        <div className="max-h-96 overflow-y-auto p-4 space-y-2">
+        <div className="flex flex-col gap-[8px] items-center py-[4px] w-full rounded hover:bg-gray-800">
           {suggestions.map(suggestion => (
-            <div key={suggestion.id} className="flex items-center gap-3 bg-[#111216] p-3 rounded-lg">
-              <img src={suggestion.thumbnail_url} className="w-12 h-12 rounded" />
-              <div className="flex-1">
-                <div className="text-sm font-semibold">{suggestion.title}</div>
-                <div className="text-xs text-gray-400">{suggestion.artist_name}</div>
+            <div key={suggestion.id} className="flex w-full gap-[8px] items-center relative">
+              <img src={suggestion.thumbnail_url} className="w-[56px] h-[56px] object-cover" />
+              <div className="w-1/2">
+                <div className="font-medium text-[14px] text-white truncate">{suggestion.title}</div>
+                <div className="text-[12px] text-[#777] truncate">{suggestion.artist_name}</div>
               </div>
               {canControl && (
                 <button 
-                  className="px-3 py-1 bg-blue-600 rounded text-sm" 
+                  className="px-3 py-1 bg-green-500 rounded hover:bg-green-600 transition text-sm flex-shrink-0 absolute right-[0px]" 
                   onClick={() => onApprove(suggestion.id)}
                 >
                   Approve
@@ -805,29 +814,29 @@ function SuggestionsModal({ suggestions, canControl, onApprove, onClose }) {
 
 function MembersModal({ members, currentUserId, onClose }) {
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-end z-50">
-      <div className="bg-[#0d0f12] w-full max-h-[80vh] rounded-t-lg">
-        <div className="p-4 border-b border-gray-800 flex items-center justify-between">
+    <div className="fixed top-[0px] left-[0px] w-screen h-screen bg-[#010101] bg-opacity-50 flex z-50 overflow-y-auto p-[20px] pb-[48px]">
+      <div className="w-full max-h-[80vh] rounded-t-lg">
+        <div className="pb-[12px] flex items-center justify-between">
           <div className="text-lg font-semibold">Members</div>
           <button onClick={onClose} className="text-gray-400 hover:text-white text-xl">×</button>
         </div>
         
-        <div className="max-h-96 overflow-y-auto p-4 space-y-2">
+        <div className="flex flex-col gap-[12px] overflow-y-auto p-4 space-y-2">
           {members.map(member => (
-            <div key={member.user.id} className="flex items-center gap-3 bg-[#111216] p-3 rounded-lg">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 flex items-center justify-center">
-                <span className="text-sm font-bold">
+            <div key={member.user.id} className="flex items-center gap-3 relative">
+              <div className="">
+                <span className="w-[48px] h-[48px] rounded-full bg-[#555] flex items-center justify-center font-bold">
                   {member.user.username[0].toUpperCase()}
                 </span>
               </div>
-              <div className="flex-1">
+              <div className="ml-[8px]">
                 <div className="text-sm font-semibold">
                   {member.user.username}
                   {member.user.id === currentUserId && " (You)"}
                 </div>
                 <div className="text-xs text-gray-400 capitalize">{member.role}</div>
               </div>
-              <div className="text-xs text-gray-400">
+              <div className="px-3 py-1 bg-green-500 rounded hover:bg-green-600 transition text-sm flex-shrink-0 absolute right-[0px]">
                 {member.role === "host" && "👑"}
                 {member.role === "editor" && "✏️"}
                 {member.role === "member" && "👤"}

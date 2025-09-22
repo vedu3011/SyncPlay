@@ -237,5 +237,3 @@ export const transferHost = async (roomId, userId) => {
 
 
 export default API;
-
-

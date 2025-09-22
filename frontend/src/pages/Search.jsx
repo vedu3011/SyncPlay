@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { getSearchResults } from "../lib/api";
 import { Link } from "react-router-dom";
 import { usePlayer } from '../contexts/PlayerContext';
+import { IoSearch } from "react-icons/io5";
 
 
 function useDebounce(value, delay) {
@@ -39,19 +40,24 @@ export default function Search() {
   }, [debouncedQuery]);
 
   const SectionTitle = ({ children }) => (
-    <h2 className="text-base font-semibold mt-6 mb-3">{children}</h2>
+    <h2 className="text-lg font-bold mt-6 mb-[4px]">{children}</h2>
   );
 
   return (
-    <div className="min-h-screen bg-[#0d0f12] text-white p-4">
+    <div className="min-h-screen w-screen bg-[#010101] text-white p-[12px] flex flex-col">
+      {/* <div className="w-screen flex flex-col items-center"> */}
+      <div className="w-full p-[8px] my-[8px] border border-bg-[#555] bg-[#101010] flex justify-between items-center"  style={{ borderRadius: '12px' }}>
       <input
         type="search"
         placeholder="Search artists, songs, playlists..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        className="w-full p-2 rounded-md bg-[#222733] text-white"
+        className="text-white bg-transparent outline-none flex-1"
         autoFocus
       />
+      <IoSearch className="text-[#dd2476] w-[20px] h-[20px]"/>
+      </div>
+      {/* </div> */}
       {loading && <p>Loading…</p>}
       {error && <p className="text-red-500">Error: {error}</p>}
 
@@ -60,14 +66,23 @@ export default function Search() {
           {data.artists.length > 0 && (
             <>
               <SectionTitle>Artists</SectionTitle>
-              <div className="flex gap-4 overflow-x-auto">
+              <div className="flex gap-[8px] overflow-x-auto w-full p-[4px] mb-[12px]" 
+            style={{ 
+            scrollbarWidth: 'none', 
+            msOverflowStyle: 'none',
+          }}
+        >
+          <style jsx>{`
+            div::-webkit-scrollbar {
+              display: none;
+            }`}</style>
                 {data.artists.map((a, idx) => (
                   <Link
                     to={`/artist/${a.browse_id}`}
                     key={idx}
                     className="flex flex-col items-center min-w-[70px]"
                   >
-                    <div className="w-14 h-14 rounded-full overflow-hidden ring-2 ring-gray-700">
+                    <div className="w-14 h-14 rounded-full overflow-hidden ring-2 ring-[#fff]">
                       {a.image_url ? (
                         <img
                           src={a.image_url}
@@ -78,7 +93,7 @@ export default function Search() {
                         <div className="w-full h-full bg-[#222733]" />
                       )}
                     </div>
-                    <p className="text-xs mt-2 max-w-[70px] truncate text-center">
+                    <p className="text-xs mt-2 max-w-[70px] truncate text-center text-[#ffffff]">
                       {a.name}
                     </p>
                   </Link>
@@ -90,15 +105,15 @@ export default function Search() {
           {data.songs.length > 0 && (
             <>
               <SectionTitle>Songs</SectionTitle>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="flex flex-col gap-[8px] mb-[12px]">
                 {data.songs.map((s, idx) => (
                   <div
                     key={idx}
-                    className="bg-[#161a23] rounded-xl overflow-hidden"
+                    className="rounded-xl overflow-hidden flex items-center gap-[4px]"
                     onClick={() => playSong(s, { type: 'search', songs: data.songs })}
                     style={{ cursor: 'pointer' }}
                   >
-                    <div className="w-full h-24 bg-gray-700">
+                    <div className="w-[64px] h-[64px] bg-gray-700 flex-shrink-0">
                       {s.thumbnail_url && (
                         <img
                           src={s.thumbnail_url}
@@ -107,7 +122,7 @@ export default function Search() {
                         />
                       )}
                     </div>
-                    <div className="p-2">
+                    <div className="p-3 flex-1 min-w-0">
                       <p className="text-sm font-semibold truncate">{s.title}</p>
                       <p className="text-xs text-gray-400 truncate">
                         {s.artist_name}
@@ -122,14 +137,23 @@ export default function Search() {
           {data.playlists.length > 0 && (
             <>
               <SectionTitle>Playlists</SectionTitle>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="flex gap-[8px] overflow-x-auto pb-[96px]"
+              style={{ 
+                  scrollbarWidth: 'none', 
+                  msOverflowStyle: 'none',
+                }}
+              >
+                <style jsx>{`
+                  div::-webkit-scrollbar {
+                    display: none;
+               }`}</style>
                 {data.playlists.map((p, idx) => (
                   <Link
                     to={`/playlist/${p.id}`}
                     key={idx}
-                    className="bg-[#161a23] rounded-xl overflow-hidden"
+                    className="bg-[#0E1516] rounded-xl overflow-hidden w-[160px] shrink-0"
                   >
-                    <div className="w-full h-24 bg-gray-700">
+                    <div className="w-full h-[160px] bg-gray-700">
                       {p.cover_url && (
                         <img
                           src={p.cover_url}
@@ -138,9 +162,9 @@ export default function Search() {
                         />
                       )}
                     </div>
-                    <div className="p-2">
+                    <div className="p-[8px] text-[#fff]">
                       <p className="text-sm font-semibold truncate">{p.title}</p>
-                      <p className="text-xs text-gray-400 truncate">
+                      <p className="text-xs text-gray-400 truncate hidden">
                         {p.track_count} songs
                       </p>
                     </div>

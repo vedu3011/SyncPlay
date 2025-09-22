@@ -1,5 +1,3 @@
-
-
 # settings.py - Fixed for Supabase PostgreSQL
 
 import os
@@ -108,6 +106,7 @@ SIMPLE_JWT = {
 #     }
 # }
 
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
@@ -121,6 +120,16 @@ DATABASES = {
         }
     }
 }
+
+
+
+
+# import dj_database_url
+
+# DATABASES = {
+#     "default": dj_database_url.config(default=os.getenv("POSTGRES_URL"))
+# }
+
 
 # Channels (WebSockets)
 CHANNEL_LAYERS = {

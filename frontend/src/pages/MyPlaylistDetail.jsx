@@ -8,6 +8,7 @@ import {
 import { getSearchResults, addTrackToPlaylist,  } from "../lib/api";
 import BottomNav from "../components/BottomNav";
 import { usePlayer } from "../contexts/PlayerContext";
+import { BsFillPlayFill } from "react-icons/bs";
 
 export default function MyPlaylistDetail() {
   const { id } = useParams();
@@ -17,6 +18,11 @@ export default function MyPlaylistDetail() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [addingTrackIds, setAddingTrackIds] = useState(new Set());
+  const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState(""); // "success" or "error"
+  // confirmation modal for remove songs
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+const [trackToRemove, setTrackToRemove] = useState(null);
 
   const load = async () => {
     const data = await getCustomPlaylistDetail(id);
@@ -25,13 +31,21 @@ export default function MyPlaylistDetail() {
 
   useEffect(() => { load(); }, [id]);
 
-  if (!pl) return <div className="min-h-screen bg-[#0d0f12] text-white p-4">Loading…</div>;
+  if (!pl) return <div className="h-screen w-screen bg-[#010101] text-white flex items-center justify-center">Loading…</div>;
 
   const onRemove = async (videoId) => {
-    if (!confirm("Remove this track?")) return;
     await removeTrackFromPlaylist(id, videoId);
-    await load();
-  };
+  await load();
+  setShowConfirmModal(false);
+  setTrackToRemove(null);
+};
+
+const handleRemoveClick = (track) => {
+  console.log("handleRemoveClick called with:", track);
+  console.log("Setting showConfirmModal to true");
+  setTrackToRemove(track);
+  setShowConfirmModal(true);
+};
 
   const startPlayback = () => {
     const queue = pl.tracks.map(t => ({
@@ -55,10 +69,11 @@ const handleSearch = async () => {
 };
 
 const handleAddTrack = async (track) => {
-  if (addingTrackIds.has(track.video_id)) return;
+  const trackId = track.video_id || track.yt_video_id; // ✅ normalize id
+  if (addingTrackIds.has(trackId)) return;
   setAddingTrackIds(prev => {
     const next = new Set(prev);
-    next.add(track.video_id);
+    next.add(trackId);
     return next;
   });
   try {
@@ -70,13 +85,17 @@ const handleAddTrack = async (track) => {
     duration_sec: track.duration_sec || 0,
   };
   await addTrackToPlaylist(id, payload);
-  alert(`${track.title} added to playlist!`);
+  // Show success message instead of alert
+    setMessage(`"${track.title}" added to playlist!`);
+    setMessageType("success");
+    setTimeout(() => setMessage(""), 3000); // Clear message after 3 seconds
+
 
   // Update UI: remove this track from search results, reset inputs & loading state
-  setSearchResults(prev => prev.filter(tr => tr.video_id !== track.video_id && tr.yt_video_id !== track.video_id));
+  setSearchResults(prev => prev.filter(tr => (tr.video_id || tr.yt_video_id) !== trackId && tr.yt_video_id !== trackId));
   setAddingTrackIds(prev => {
     const next = new Set(prev);
-    next.delete(track.video_id);
+    next.delete(trackId);
     return next;
   });
   setSearchQuery("");
@@ -86,43 +105,71 @@ const handleAddTrack = async (track) => {
   const updated = await getCustomPlaylistDetail(id);
   setPl(updated);
 } catch (e) {
-  alert("Failed to add track");
+  // Show error message instead of alert
+    setMessage("Failed to add track. Please try again.");
+    setMessageType("error");
+    setTimeout(() => setMessage(""), 3000);
+
+  setAddingTrackIds(prev => {
+      const next = new Set(prev);
+      next.delete(trackId);
+      return next;
+  });
+  console.log("showConfirmModal:", showConfirmModal, "trackToRemove:", trackToRemove);
 }
 
 };
 
   return (
-    <div className="min-h-screen bg-[#0d0f12] text-white pb-16">
+    <div className="min-h-screen w-screen p-[12px] bg-[#060202] text-white pb-16">
       <div className="p-4">
-        <div className="w-full h-40 bg-gray-700 rounded-lg flex items-center justify-center text-5xl mb-4">
+        {/* Message container */}
+{message && (
+  <div className={`fixed top-[0px] left-[0px] font-[800] text-center w-full z-50 px-[4px] py-[2px] text-[12px] bg-[#0E1516] shadow-lg ${
+      messageType === "success"
+        ? "text-[#270]"
+        : "text-[#D8000C]"
+    }`}>
+    {message}
+  </div>
+)}
+
+        <div className="w-full h-[64px] bg-gray-700 rounded-lg flex items-center justify-center text-[28px] my-[24px] mb-4">
           {pl.is_favourites ? "❤️" : "🎵"}
         </div>
+        
            <div className="flex items-center justify-between">
   <div>
-    <h1 className="text-xl font-bold">{pl.name}</h1>
-    <div className="text-xs text-gray-400">{pl.tracks.length} Songs</div>
+    <h1 className="text-[28px] font-bold">{pl.name}</h1>
+    <div className="text-xs text-[#777]">{pl.tracks.length} Songs</div>
   </div>
-  <div className="flex items-center gap-2">
+  <div className="flex items-center gap-[16px]">
     <button
-      onClick={() => setSearchVisible(!searchVisible)}
-      className="px-3 py-1 rounded-lg bg-pink-500 text-white"
-      title="Add songs"
-    >
-      +
+      onClick={() => {
+    if (!searchVisible) {
+      setSearchResults([]);  // ✅ clear old results when closing
+      setSearchQuery("");
+    }
+    setSearchVisible(!searchVisible);
+  }}
+  className="px-3 py-1 rounded-lg text-[#dd2476]"
+  title="Add songs"
+>
+      +Add
     </button>
     <button
       onClick={startPlayback}
-      className="px-4 py-2 rounded-lg bg-pink-500"
+      className="px-4 py-2"
     >
-      Play
+      <BsFillPlayFill className="w-[16px] h-[16px]"/>
     </button>
   </div>
 </div>
 
 
      {searchVisible && (
-  <div className="mt-4 p-3 bg-[#222733] rounded-md">
-    <div className="flex gap-2">
+  <div className="bg-[#0E1516] rounded-[16px] my-[8px]">
+    <div className="flex gap-2 items-center border border-[#555] bg-[#101010] rounded-[16px] py-[8px] px-[12px]">
       <input
         type="text"
         autoFocus
@@ -130,7 +177,7 @@ const handleAddTrack = async (track) => {
         value={searchQuery}
         onChange={e => setSearchQuery(e.target.value)}
         onKeyDown={e => e.key === "Enter" && handleSearch()}
-        className="flex-grow p-2 rounded bg-gray-700 text-white"
+        className="flex-grow mr-[8px] text-white bg-transparent outline-none"
       />
       <button
         onClick={handleSearch}
@@ -140,33 +187,45 @@ const handleAddTrack = async (track) => {
       </button>
     </div>
 
-    <div className="mt-3 max-h-48 overflow-auto">
-      {searchResults.length === 0 && <p className="text-gray-400 mt-2">No results</p>}
-      {searchResults.map(track => (
-        <div key={track.video_id} className="flex justify-between items-center p-2 rounded hover:bg-gray-800">
-          <div>
-            <div className="text-sm font-semibold">{track.title}</div>
-            <div className="text-xs text-gray-400">{track.artist_name || "Unknown Artist"}</div>
-          </div>
-          <button
-            disabled={addingTrackIds.has(track.video_id)}
-            onClick={() => handleAddTrack(track)}
-            className="text-pink-500 hover:underline"
-          >
-            {addingTrackIds.has(track.video_id) ? "Adding..." : "Add"}
-          </button>
-        </div>
-      ))}
+    <div className="max-h-48 overflow-auto">
+      {searchResults.length === 0 && <p className="text-gray-400 py-[4px] px-[12px]">No results</p>}
+      {searchResults.map(track => {
+  const trackId = track.video_id || track.yt_video_id; // normalize here too
+  return (
+    <div key={trackId} className="flex justify-between items-center py-[4px] px-[12px] rounded hover:bg-gray-800">
+      <div className="flex gap-[8px] items-center">
+        <div>
+        {track.thumbnail_url ? (
+          <img src={track.thumbnail_url} className="w-[56px] h-[56px] object-cover" />
+        ) : (
+          <div className="w-full h-full" />
+        )}
+      </div>
+      <div> 
+        <div className="text-sm font-semibold">{track.title}</div>
+        <div className="text-[12px] text-[#777]">{track.artist_name || "Unknown Artist"}</div>
+      </div>
+      </div>
+      <button
+        disabled={addingTrackIds.has(trackId)}
+        onClick={() => handleAddTrack(track)}
+        className="text-pink-500 hover:underline"
+      >
+        {addingTrackIds.has(trackId) ? "Adding..." : "Add"}
+      </button>
+    </div>
+  );
+})}
     </div>
   </div>
 )}
 
 
-        <div className="mt-4 space-y-2">
+        <div className="my-[16px] space-y-2 flex flex-col gap-[8px]">
   {pl.tracks.map((t) => (
     <div
       key={t.video_id}
-      className="flex items-center gap-3 bg-[#161a23] p-2 rounded-lg cursor-pointer"
+      className="rounded-xl overflow-hidden flex items-baseline justify-between relative"
       onClick={() =>
         playSong(
           {
@@ -180,18 +239,22 @@ const handleAddTrack = async (track) => {
         )
       }
     >
-      <div className="w-12 h-12 bg-gray-700 rounded overflow-hidden">
+      <div className="flex gap-[4px] items-center w-full pr-[8px]">
+      <div className="w-[64px] h-[64px] bg-gray-700 flex-shrink-0">
         {t.thumbnail_url ? (
           <img src={t.thumbnail_url} className="w-full h-full object-cover" />
         ) : (
-          <div className="w-full h-full" />
+          <div className="w-full h-full object-cover" />
         )}
       </div>
-      <div className="flex-1 min-w-0">
-        <div className="text-sm font-semibold truncate">{t.title}</div>
-        <div className="text-xs text-gray-400 truncate">{t.artist_name}</div>
+      <div className="flex-1">
+        <div className="text-[16px] font-semibold truncate">{t.title}</div>
+        <div className="text-[12px] text-gray-400 truncate">{t.artist_name}</div>
       </div>
-      <button className="text-sm text-red-400" onClick={(e) => { e.stopPropagation(); onRemove(t.video_id); }}>
+      </div>
+      <button className="absolute bottom-[2px] right-[2px] text-[12px] text-[#FF512F] shrink-0" onClick={(e) => { e.stopPropagation();
+         console.log("Remove button clicked for track:", t); // Debug log
+        handleRemoveClick(t); }}>
         Remove
       </button>
     </div>
@@ -200,6 +263,40 @@ const handleAddTrack = async (track) => {
     <div className="text-center text-gray-400 mt-8">No songs yet.</div>
   )}
 </div>
+
+{/* Confirmation Modal */}
+{showConfirmModal && (
+  <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-[9999]" style={{ zIndex: 9999 }}>
+    <div className="bg-[#161a23] p-6 rounded-lg max-w-sm w-full mx-4 border border-gray-600">
+      <h3 className="text-lg font-semibold mb-2 text-white">Remove Track</h3>
+      <p className="text-gray-400 mb-4">
+        Are you sure you want to remove "{trackToRemove?.title}" from this playlist?
+      </p>
+      <div className="flex gap-3 justify-end">
+        <button
+          onClick={() => {
+            console.log("Cancel clicked"); // Debug log
+            setShowConfirmModal(false);
+            setTrackToRemove(null);
+          }}
+          className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700"
+        >
+          Cancel
+        </button>
+        <button
+          onClick={() => {
+            console.log("Remove confirmed for:", trackToRemove?.video_id); // Debug log
+            onRemove(trackToRemove?.video_id);
+          }}
+          className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+        >
+          Remove
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
 
       </div>
       <BottomNav />
