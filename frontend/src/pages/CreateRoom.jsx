@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { createRoom } from "../lib/api";
 import { useNavigate } from "react-router-dom";
+import { IoArrowBackOutline } from "react-icons/io5";
 
 export default function CreateRoom() {
   const nav = useNavigate();
@@ -13,7 +14,16 @@ export default function CreateRoom() {
   };
 
   return (
-    <div className="h-screen w-screen bg-[#010101] flex flex-col justify-center items-center gap-[20px] mt-[-64px]">
+    <div className="h-screen w-screen bg-[#010101] flex flex-col justify-center items-center gap-[20px] mt-[-64px] relative">
+            {/* Header */}
+        <div className="absolute top-[80px] left-[16px]">
+          <button 
+            onClick={() => window.history.back()} 
+            className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-800 transition-colors"
+          >
+            <IoArrowBackOutline />
+          </button>
+        </div>
       <h1 className="text-xl font-semibold mb-4">Create Room</h1>
       
       <input className="w-1/2 p-3 bg-transparent border-b border-gray-600 text-white focus:outline-none transition-colors"

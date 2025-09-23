@@ -14,7 +14,7 @@ export default function PlaylistCreateModal({ isOpen, onClose, onCreate }) {
 
   return (
     <div
-      className="fixed top-[0px] left-[0px] bg-black bg-opacity-60 flex items-center justify-center z-50"
+      className="fixed top-[0px] left-[0px] bg-[#010101] bg-opacity-60 flex flex-col items-center justify-center z-50 h-full"
       onClick={onClose}
     >
       <div
