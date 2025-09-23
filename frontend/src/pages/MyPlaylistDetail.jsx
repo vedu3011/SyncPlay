@@ -9,6 +9,7 @@ import { getSearchResults, addTrackToPlaylist,  } from "../lib/api";
 import BottomNav from "../components/BottomNav";
 import { usePlayer } from "../contexts/PlayerContext";
 import { BsFillPlayFill } from "react-icons/bs";
+import { IoArrowBackOutline } from "react-icons/io5";
 
 export default function MyPlaylistDetail() {
   const { id } = useParams();
@@ -123,6 +124,16 @@ const handleAddTrack = async (track) => {
   return (
     <div className="min-h-screen w-screen p-[12px] bg-[#060202] text-white pb-16">
       <div className="p-4">
+      {/* Header */}
+        <div className="flex items-center justify-between mb-[8px]">
+          <button 
+            onClick={() => window.history.back()} 
+            className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-800 transition-colors"
+          >
+            <IoArrowBackOutline />
+          </button>
+        </div>
+
         {/* Message container */}
 {message && (
   <div className={`fixed top-[0px] left-[0px] font-[800] text-center w-full z-50 px-[4px] py-[2px] text-[12px] bg-[#0E1516] shadow-lg ${

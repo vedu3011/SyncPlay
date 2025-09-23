@@ -171,7 +171,7 @@ const handleSavePlaylist = async () => {
  
         {/* Playlist Info */}
         <div className="mb-6 flex flex-col items-center">
-          <div className="w-full h-48 rounded-xl overflow-hidden bg-[#222733] mb-4 relative group">
+          <div className="h-48 rounded-xl overflow-hidden bg-[#222733] mb-4 relative group">
             {data.cover_url && (
               <img 
                 src={data.cover_url} 
