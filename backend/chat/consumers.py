@@ -1,186 +1,190 @@
-# # backend/chat/consumers.py
-# import json
-# from channels.generic.websocket import AsyncWebsocketConsumer
-# from channels.db import database_sync_to_async
-# # from rest_framework_simplejwt.tokens import UntypedToken
-# from jwt import InvalidTokenError
-# from .middleware import get_user
-# import json
+# backend/chat/consumers.py
+import json
+from channels.generic.websocket import AsyncWebsocketConsumer
+from channels.db import database_sync_to_async
+# from rest_framework_simplejwt.tokens import UntypedToken
+from jwt import InvalidTokenError
+from .middleware import get_user
+import json
 
-# from urllib.parse import parse_qs
+from urllib.parse import parse_qs
 
-# # from django.contrib.auth.models import AnonymousUser
-# # from social.models import Friendship
-# # from .models import Message
+# from django.contrib.auth.models import AnonymousUser
+# from social.models import Friendship
+# from .models import Message
 
 
 
-# class ChatConsumer(AsyncWebsocketConsumer):
+class ChatConsumer(AsyncWebsocketConsumer):
    
-#     async def connect(self):
-#         # user is already set by JWTAuthMiddleware
-#         user = self.scope.get("user")
+    async def connect(self):
+        # user is already set by JWTAuthMiddleware
+        user = self.scope.get("user")
 
-#         if not user or not user.is_authenticated:
-#             await self.close(code=403)
-#             return
+        if not user or not user.is_authenticated:
+            await self.close(code=403)
+            return
 
-#         self.room_id = self.scope["url_route"]["kwargs"]["room_id"]
-#         self.group_name = f"chat_{self.room_id}"
+        self.room_id = self.scope["url_route"]["kwargs"]["room_id"]
+        self.group_name = f"chat_{self.room_id}"
 
-#         # Join group
-#         await self.channel_layer.group_add(self.group_name, self.channel_name)
-#         await self.accept()
+        # Join group
+        await self.channel_layer.group_add(self.group_name, self.channel_name)
+        await self.accept()
 
-#     async def disconnect(self, close_code):
-#         await self.channel_layer.group_discard(self.group_name, self.channel_name)
+    async def disconnect(self, close_code):
+        await self.channel_layer.group_discard(self.group_name, self.channel_name)
 
-#     async def receive(self, text_data):
-#         payload = json.loads(text_data)
-#         if payload.get("type") == "message":
-#             ciphertext = payload.get("ciphertext")
-#             user = self.scope["user"]
+    async def receive(self, text_data):
+        payload = json.loads(text_data)
+        if payload.get("type") == "message":
+            ciphertext = payload.get("ciphertext")
+            user = self.scope["user"]
 
-#             # Example save (replace with your DB model method)
-#             msg = await self.save_message(user.id, self.room_id, ciphertext)
+            # Example save (replace with your DB model method)
+            msg = await self.save_message(user.id, self.room_id, ciphertext)
 
-#             await self.channel_layer.group_send(
-#                 self.group_name,
-#                 {
-#                     "type": "chat.message",
-#                     "message": ciphertext,
-#                     "user": str(user),
-#                     "id": msg.id,
-#                     "ciphertext": msg.ciphertext,
-#                     "sender_id": msg.sender_id,
-#                     "created_at": msg.created_at.isoformat(),
-#                 },
-#             )
+            await self.channel_layer.group_send(
+                self.group_name,
+                {
+                    "type": "chat.message",
+                    "message": ciphertext,
+                    "user": str(user),
+                    "id": msg.id,
+                    "ciphertext": msg.ciphertext,
+                    "sender_id": msg.sender_id,
+                    "created_at": msg.created_at.isoformat(),
+                },
+            )
 
-#     async def chat_message(self, event):
-#         await self.send(text_data=json.dumps(event))
+    async def chat_message(self, event):
+        await self.send(text_data=json.dumps(event))
 
 
     
 
-#     @database_sync_to_async
-#     def user_in_friendship(self, uid, fid):
-#         from social.models import Friendship 
-#         f = Friendship.objects.filter(id=fid).first()
-#         return bool(f and (f.user_a_id == uid or f.user_b_id == uid))
+    @database_sync_to_async
+    def user_in_friendship(self, uid, fid):
+        from social.models import Friendship 
+        f = Friendship.objects.filter(id=fid).first()
+        return bool(f and (f.user_a_id == uid or f.user_b_id == uid))
 
-#     @database_sync_to_async
-#     def save_message(self, uid, fid, ciphertext):
-#         from social.models import Friendship 
-#         from .models import Message
-#         # f = Friendship.objects.get(id=fid)
-#         # msg = Message.objects.create(friendship=f, sender_id=uid, ciphertext=ciphertext)
-#         # f.last_message_at = msg.created_at; f.save(update_fields=["last_message_at"])
-#         # return msg
-#         return Message.objects.create(
-#             sender_id=uid, room_id=fid, ciphertext=ciphertext
-#         )
-#     # @database_sync_to_async
-#     # def user_in_friendship(self, uid, fid):
-#     #     from social.models import Friendship  # import here to delay
-#     #     f = Friendship.objects.filter(id=fid).first()
-#     #     return bool(f and (f.user_a_id == uid or f.user_b_id == uid))
+    @database_sync_to_async
+    def save_message(self, uid, fid, ciphertext):
+        from social.models import Friendship 
+        from .models import Message
+        # f = Friendship.objects.get(id=fid)
+        # msg = Message.objects.create(friendship=f, sender_id=uid, ciphertext=ciphertext)
+        # f.last_message_at = msg.created_at; f.save(update_fields=["last_message_at"])
+        # return msg
+        return Message.objects.create(
+            sender_id=uid, room_id=fid, ciphertext=ciphertext
+        )
+    # @database_sync_to_async
+    # def user_in_friendship(self, uid, fid):
+    #     from social.models import Friendship  # import here to delay
+    #     f = Friendship.objects.filter(id=fid).first()
+    #     return bool(f and (f.user_a_id == uid or f.user_b_id == uid))
 
-#     # @database_sync_to_async
-#     # def save_message(self, uid, fid, ciphertext):
-#     #     from social.models import Friendship  # import here to delay
-#     #     from .models import Message  # import here to delay
-#     #     f = Friendship.objects.get(id=fid)
-#     #     msg = Message.objects.create(friendship=f, sender_id=uid, ciphertext=ciphertext)
-#     #     f.last_message_at = msg.created_at; f.save(update_fields=["last_message_at"])
-#     #     return msg
-
-
-# # backend/chat/consumers.py
-# import json
-# from channels.generic.websocket import AsyncWebsocketConsumer
-# from channels.db import database_sync_to_async
-# from jwt import InvalidTokenError
-# from .middleware import get_user
-# from urllib.parse import parse_qs
+    # @database_sync_to_async
+    # def save_message(self, uid, fid, ciphertext):
+    #     from social.models import Friendship  # import here to delay
+    #     from .models import Message  # import here to delay
+    #     f = Friendship.objects.get(id=fid)
+    #     msg = Message.objects.create(friendship=f, sender_id=uid, ciphertext=ciphertext)
+    #     f.last_message_at = msg.created_at; f.save(update_fields=["last_message_at"])
+    #     return msg
 
 
-# class ChatConsumer(AsyncWebsocketConsumer):
+# backend/chat/consumers.py
+import json
+from channels.generic.websocket import AsyncWebsocketConsumer
+from channels.db import database_sync_to_async
+from jwt import InvalidTokenError
+from .middleware import get_user
+from urllib.parse import parse_qs
+
+
+class ChatConsumer(AsyncWebsocketConsumer):
    
-#     async def connect(self):
-#         # Initialize group_name to None first to prevent AttributeError
-#         self.group_name = None
+    async def connect(self):
+        # Initialize group_name to None first to prevent AttributeError
+        self.group_name = None
         
-#         try:
-#             # user is already set by JWTAuthMiddleware
-#             user = self.scope.get("user")
+        try:
+            # user is already set by JWTAuthMiddleware
+            user = self.scope.get("user")
 
-#             if not user or not user.is_authenticated:
-#                 print("❌ WebSocket connection rejected: User not authenticated")
-#                 await self.close(code=403)
-#                 return
+            if not user or not user.is_authenticated:
+                print("❌ WebSocket connection rejected: User not authenticated")
+                await self.close(code=403)
+                return
 
-#             self.room_id = self.scope["url_route"]["kwargs"]["room_id"]
-#             self.group_name = f"chat_{self.room_id}"
+            self.room_id = self.scope["url_route"]["kwargs"]["room_id"]
+            self.group_name = f"chat_{self.room_id}"
 
-#             # Join group
-#             await self.channel_layer.group_add(self.group_name, self.channel_name)
-#             await self.accept()
-#             print(f"✅ WebSocket connected: User {user} joined room {self.room_id}")
+            # Join group
+            await self.channel_layer.group_add(self.group_name, self.channel_name)
+            await self.accept()
+            print(f"✅ WebSocket connected: User {user} joined room {self.room_id}")
             
-#         except Exception as e:
-#             print(f"❌ WebSocket connection error: {e}")
-#             await self.close(code=500)
+        except Exception as e:
+            print(f"❌ WebSocket connection error: {e}")
+            await self.close(code=500)
 
-#     async def disconnect(self, close_code):
-#         try:
-#             # Only try to leave group if group_name was set
-#             if hasattr(self, 'group_name') and self.group_name:
-#                 await self.channel_layer.group_discard(self.group_name, self.channel_name)
-#                 print(f"✅ WebSocket disconnected: Left room {self.group_name}")
-#             else:
-#                 print("✅ WebSocket disconnected: No group to leave")
-#         except Exception as e:
-#             print(f"❌ Error during WebSocket disconnect: {e}")
+    async def disconnect(self, close_code):
+        try:
+            # Only try to leave group if group_name was set
+            if hasattr(self, 'group_name') and self.group_name:
+                await self.channel_layer.group_discard(self.group_name, self.channel_name)
+                print(f"✅ WebSocket disconnected: Left room {self.group_name}")
+            else:
+                print("✅ WebSocket disconnected: No group to leave")
+        except Exception as e:
+            print(f"❌ Error during WebSocket disconnect: {e}")
 
-#     async def receive(self, text_data):
-#         payload = json.loads(text_data)
-#         if payload.get("type") == "message":
-#             ciphertext = payload.get("ciphertext")
-#             user = self.scope["user"]
+    async def receive(self, text_data):
+        payload = json.loads(text_data)
+        if payload.get("type") == "message":
+            ciphertext = payload.get("ciphertext")
+            user = self.scope["user"]
 
-#             # Example save (replace with your DB model method)
-#             msg = await self.save_message(user.id, self.room_id, ciphertext)
+            # Example save (replace with your DB model method)
+            msg = await self.save_message(user.id, self.room_id, ciphertext)
 
-#             await self.channel_layer.group_send(
-#                 self.group_name,
-#                 {
-#                     "type": "chat.message",
-#                     "message": ciphertext,
-#                     "user": str(user),
-#                     "id": msg.id,
-#                     "ciphertext": msg.ciphertext,
-#                     "sender_id": msg.sender_id,
-#                     "created_at": msg.created_at.isoformat(),
-#                 },
-#             )
+            await self.channel_layer.group_send(
+                self.group_name,
+                {
+                    "type": "chat.message",
+                    "message": ciphertext,
+                    "user": str(user),
+                    "id": msg.id,
+                    "ciphertext": msg.ciphertext,
+                    "sender_id": msg.sender_id,
+                    "created_at": msg.created_at.isoformat(),
+                },
+            )
 
-#     async def chat_message(self, event):
-#         await self.send(text_data=json.dumps(event))
+    async def chat_message(self, event):
+        await self.send(text_data=json.dumps(event))
 
-#     @database_sync_to_async
-#     def user_in_friendship(self, uid, fid):
-#         from social.models import Friendship 
-#         f = Friendship.objects.filter(id=fid).first()
-#         return bool(f and (f.user_a_id == uid or f.user_b_id == uid))
+    @database_sync_to_async
+    def user_in_friendship(self, uid, fid):
+        from social.models import Friendship 
+        f = Friendship.objects.filter(id=fid).first()
+        return bool(f and (f.user_a_id == uid or f.user_b_id == uid))
 
-#     @database_sync_to_async
-#     def save_message(self, uid, fid, ciphertext):
-#         from social.models import Friendship 
-#         from .models import Message
-#         return Message.objects.create(
-#             sender_id=uid, room_id=fid, ciphertext=ciphertext
-#         )
+    @database_sync_to_async
+    def save_message(self, uid, fid, ciphertext):
+        from social.models import Friendship 
+        from .models import Message
+        return Message.objects.create(
+            sender_id=uid, room_id=fid, ciphertext=ciphertext
+        )
+
+
+
+
 
 # backend/chat/consumers.py
 import json
@@ -313,3 +317,5 @@ class NotificationConsumer(AsyncWebsocketConsumer):
     # Handler for events pushed via channel_layer
     async def notify(self, event):
         await self.send(text_data=json.dumps(event))    
+
+

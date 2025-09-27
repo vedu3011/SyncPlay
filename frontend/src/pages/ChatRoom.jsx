@@ -479,3 +479,8 @@ function MessageBubble({ mine, textPromise, created_at }) {
     </div>
   );
 }
+
+
+
+
+
