@@ -92,35 +92,21 @@ SIMPLE_JWT = {
 }
 
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.postgresql",
-#         "NAME": "postgres",
-#         "USER": "postgres",
-#         "PASSWORD": os.getenv("SUPABASE_DB_PASSWORD"),
-#         "HOST": "db.smdstfmcytlnhcdmxzcv.supabase.co",
-#         "PORT": "5432",
-#         "OPTIONS": {
-#             "sslmode": "require",
-#         }
-#     }
-# }
 
 
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": "postgres",
-        "USER": "postgres.smdstfmcytlnhcdmxzcv",
+        "USER": "postgres",
         "PASSWORD": os.getenv("SUPABASE_DB_PASSWORD"),
-        "HOST": "aws-1-ap-south-1.pooler.supabase.com",
-        "PORT": "5432",  # As shown on your dashboard
+        "HOST": "db.zgpvotkfgdsydbgremlv.supabase.co",
+        "PORT": "5432",
         "OPTIONS": {
             "sslmode": "require",
         }
     }
 }
-
 
 
 

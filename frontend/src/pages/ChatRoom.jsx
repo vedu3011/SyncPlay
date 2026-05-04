@@ -330,7 +330,7 @@ const handleCreatePlaylistWithName = () => {
         if (created?.id) openSharedPlaylistHandler(fid);
         setShowModal(false);
       }}
-      className="w-full text-left px-4 py-3 hover:bg-[#252b3c] rounded-lg hidden items-center gap-[4px] mb-[2px]"
+      className="w-full text-left px-4 py-3 hover:bg-[#252b3c] rounded-lg items-center gap-[4px] mb-[2px]"
     >
      ➕ Create Playlist
     </button>
